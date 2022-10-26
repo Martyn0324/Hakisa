@@ -25,6 +25,8 @@ At each step, a tuple `(frame, key, value, reward)` will be added to the memory.
 
 In this mode, it's important that Hakisa generates outputs as diverse as possible, so avoid using weights initialization through normal or uniform distribution.
 
+**EDIT: Now using random noise as input during this mode. This way, we can get a wider range of outputs and, thus, expose Hakisa to a wider range of situations**
+
 ### Study Mode
 
 We'll use Hakisa's memory to generate a classic dataset for machine learning. Each frame will serve as input, and each value, a label. As criterion, we'll use MSE Loss.
