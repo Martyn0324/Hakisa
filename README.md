@@ -46,5 +46,3 @@ We're gonna be using a custom loss function, GameplayLoss, which will use the re
 This way, Hakisa can correct some associations she made in the study mode, probably because she didn't get exposed to determined situations or because she didn't generate the best output for that situation during the exploration mode.
 
 This way, Hakisa can play and get better and better as she plays, all by herself.
-
-**EDIT: During testing, it was noticed that negative outputs must generate negative gradients for reward, while positive outputs must use positive gradients for reward. If you use -reward for both, the outputs tend to +infinite, while using reward for both makes outputs tend to -infinite.**
