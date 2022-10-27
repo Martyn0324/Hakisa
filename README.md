@@ -46,3 +46,5 @@ We're gonna be using a custom loss function, GameplayLoss, which will use the re
 This way, Hakisa can correct some associations she made in the study mode, probably because she didn't get exposed to determined situations or because she didn't generate the best output for that situation during the exploration mode.
 
 This way, Hakisa can play and get better and better as she plays, all by herself.
+
+**EDIT: The GameplayLoss function is actually making Hakisa's outputs as random as when she's on Exploration mode. Possible corrections might be using cumulative rewards during exploration mode or simply remaking/replacing this function. Softmax and Cross-Entropy Loss must be avoided in order to avoid great output sizes.**
