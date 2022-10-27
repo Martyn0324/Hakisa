@@ -49,4 +49,4 @@ This way, Hakisa can play and get better and better as she plays, all by herself
 
 **EDIT: The GameplayLoss function is actually making Hakisa's outputs as random as when she's on Exploration mode. Possible corrections might be using cumulative rewards during exploration mode or simply remaking/replacing this function. Softmax and Cross-Entropy Loss must be avoided in order to avoid great output sizes.**
 
-**Also good consideration for gameplay loss function: Liu, Ruo-Ze et al. Rethinking of AlphaStar, page 8: https://arxiv.org/pdf/2104.06890.pdf . Here, Categorical Loss Entropy is used, but it's between different categories of actions, which can also provide a lower output size.**
+**Also good consideration for gameplay loss function: Liu, Ruo-Ze et al. Rethinking of AlphaStar: https://arxiv.org/pdf/2104.06890.pdf .**
