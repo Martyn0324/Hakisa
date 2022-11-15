@@ -55,3 +55,20 @@ This way, Hakisa can play and get better and better as she plays, all by herself
 **EDIT²: The GameplayLoss function will indeed have to be remade or replaced, as its gradients makes Hakisa generate outputs that will only correspond on the extreme commands in the input mapping dictionary (she'll only generate the command for -1 and for 1).**
 
 **Also good consideration for gameplay loss function: Liu, Ruo-Ze et al. Rethinking of AlphaStar: https://arxiv.org/pdf/2104.06890.pdf . - Still uses Categorical Cross Entropy, but might be a good inspiration.**
+
+
+# Update and possible upgrades
+
+While testing my NLP models(and also chatting in Python's Discord server) I've learned that softmax can't really be avoided. The motive is simple: numbers have a correlation between each other, but our input mappings, just like words and sentences, don't. The input map `press X` isn't bigger or smaller than `click (512, 600)`.
+
+This can only be avoided by the use of categories. In a Classifier, for example, the number `0` can be the label `Dog`, while `1` can be `Cat`, and there's no mathematical relation between `Dog` or `Cat`, they're simply categories. This is learned with time by the classifier, through the use of a softmax or sigmoid function.
+In NLP, each word is assigned to an integer, which works as a label. Letter `a` can be the label `0`, `b` be `1`, `c`, `2` and so on. This relation comes up as the model trains. The same happens with Reinforcement Learning models, like Rainbow DQN, or even the Hierarchical AlphaStar.
+
+However, there's a way to avoid having to use softmax, despite this...kinda. In NLP, it's used the technique `word2vec`, which converts words to vectors, that is, a single value. `word2vec` in fact, consists on the use of algorithms to associate words to specific values and it's included in the embedding layers, commonly used in NLP models and it's used in the mentioned paper above. It makes the word `apple` has a vector closer to `fruit` than to, let's say, `car`.
+
+For Hakisa, we could do something like that to make associations between certain input mapping and a vector. `press X` can be associated with the number `0.75` and `press Z` can be associated with `0.76`, while `click (512, 600)` can be associated with `0.10`.This technique, however, requires one-hot encoding and the use of softmax, which can be make things computationally expensive.
+However, we could create a separate model, disconnected from Hakisa, that would be trained separately to convert each input map to a vector. After its training has been complete, it would be used to generate the dictionary of input mappings for Hakisa. After that, we'll continue making things as we do right now.
+
+
+*I'll be testing this idea with NLP models and see if this works and if I should make some adjustments. Consider this text if you want to test Hakisa.*
+
