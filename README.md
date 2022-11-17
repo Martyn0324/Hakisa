@@ -72,3 +72,4 @@ However, we could create a separate model, disconnected from Hakisa, that would 
 
 *I'll be testing this idea with NLP models and see if this works and if I should make some adjustments. Consider this text if you want to test Hakisa.*
 
+*EDIT: Yes, applying vector embedding seems promising. But it may be more efficient for human recorded gameplay instead of exploration mode, as it'll provide a better idea of context for each command. Exploration may still be useful, but only if memory_size <<< exploration_steps*
