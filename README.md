@@ -90,4 +90,4 @@ Those vector embedding layers will be used to create our input_mapping dictionar
 
 Categorical Cross Entropy will be used to optimize the vector embedding layers, while Mean Squared Error will be used to optimize Hakisa's output(remember that Hakisa's output will be a vector, a single number).
 
-*Perhaps one would simply add Pytorch's Embedding layers in order to do this...but meh*
+*Perhaps one could simply add Pytorch's Embedding layers in order to do this...but meh*
