@@ -72,4 +72,22 @@ However, we could create a separate model, disconnected from Hakisa, that would 
 
 *I'll be testing this idea with NLP models and see if this works and if I should make some adjustments. Consider this text if you want to test Hakisa.*
 
-*EDIT: Yes, applying vector embedding seems promising. But it may be more efficient for human recorded gameplay instead of exploration mode, as it'll provide a better idea of context for each command. Exploration may still be useful, but only if memory_size <<< exploration_steps*
+### Vector Embedding
+
+Applying vector embedding seems promising. But it may be more efficient for human recorded gameplay instead of exploration mode, as it'll provide a better idea of context for each command. Exploration may still be useful, but only if `memory_size` <<< `exploration_steps`.*
+
+Vector Embedding can be quite efficient in NLP when you're dealing with a reasonable amount of data(which can be understood as: you're not just playing with some dozens of words).
+
+For Hakisa, this can be quite good for games that use mouse, since we can get up to 4, 5 or even 6 million possible commands. However, this is quite an annoyance for games that only uses the keyboard, which will have few possible inputs.
+
+We also want to avoid directly working with millions of data in our input mapping since this will make it mandatory to use cloud servers CPUs to properly fit KNN in seconds(or minutes).
+There's also the problem that, in NLP, the vector applied to a word depends on the context that it appears and how many times it appears. For Hakisa, the "context" could vary according to the commands itself(if the action type is mouse) and according to the game frame. All of this makes me conclude that using a ready-made data or a recorded human gameplay can be way more efficient for Hakisa as it'll already dispose of a proper context(game frame, reward...the game state) for each command, something that must be discovered when in exploration mode.
+
+Study Mode will probably have to be modified: instead of simple Supervised Learning, we'll also train a Vector Embedding Layer for each action command. So we'll have `command_type` being one-hot encoded and then serving as input for this vector embedding layer, which will throw an output with the same size as the input, which will then be passed into a Cross Entropy having the input as target. The same thing will be applied to `action1` and `action2`.
+
+Those vector embedding layers will be used to create our input_mapping dictionary, which will now be used to convert Hakisa's outputs into input commands. KNN will have to be properly fitted again.
+*In the exploration mode, Hakisa will simply choose a random integer which will serve as an index for the list of input mappings generated upon calling the `Dataset` class*
+
+Categorical Cross Entropy will be used to optimize the vector embedding layers, while Mean Squared Error will be used to optimize Hakisa's output(remember that Hakisa's output will be a vector, a single number).
+
+*Perhaps one would simply add Pytorch's Embedding layers in order to do this...but meh*
