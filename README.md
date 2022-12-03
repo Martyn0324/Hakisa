@@ -74,20 +74,32 @@ However, we could create a separate model, disconnected from Hakisa, that would 
 
 ### Vector Embedding
 
-Applying vector embedding seems promising. But it may be more efficient for human recorded gameplay instead of exploration mode, as it'll provide a better idea of context for each command. Exploration may still be useful, but only if `memory_size` <<< `exploration_steps`.*
+Applying vector embedding is promising and, differently from what I'm doing, is something that actually makes mathematical sense.
+This technique is usually associated with NLP, so I think the best way to understand it for Hakisa is to relate it to NLP.
+
+In Vector Embedding, we use a quite shallow network(or maybe some other simple model) to extract context from a given input and assign a vector to it. Our input can be a single word, an entire sentence or words n-grams. The closer a token vector is from another, the closer is their meaning. I suppose that the technique is more efficient with n-grams or sentences(It's hard to extract context from a single word, lost in the abyss, isn't it?).
 
 Vector Embedding can be quite efficient in NLP when you're dealing with a reasonable amount of data(which can be understood as: you're not just playing with some dozens of words).
 
 For Hakisa, this can be quite good for games that use mouse, since we can get up to 4, 5 or even 6 million possible commands. However, this is quite an annoyance for games that only uses the keyboard, which will have few possible inputs.
-
 We also want to avoid directly working with millions of data in our input mapping since this will make it mandatory to use cloud servers CPUs to properly fit KNN in seconds(or minutes).
-There's also the problem that, in NLP, the vector applied to a word depends on the context that it appears and how many times it appears. For Hakisa, the "context" could vary according to the commands itself(if the action type is mouse) and according to the game frame. All of this makes me conclude that using a ready-made data or a recorded human gameplay can be way more efficient for Hakisa as it'll already dispose of a proper context(game frame, reward...the game state) for each command, something that must be discovered when in exploration mode.
+
+For Reinforcement Learning, we could use a similar approach. However, our input mapping actually doesn't provide any context. It's actually a feedback for a given game state, a response. So our context would be extracted from the game state, which is the captured frame.
+On this case, our vectorizer model won't be able to be a simple, shallow network. We won't be able to simply make a model with a single Pytorch Embedding layer, we need to extract features from the game frame and associate them with a given command.
+
+Also, this method might make Hakisa's Exploration mode useless, as this mode doesn't relate a game frame to a proper, "correct" command, it just tries to generate the "least worst option". Training our vectorizer based on this mode wouldn't be efficient at all.
+In NLP, if the vectorizer receives the sentence "School bright keyboard Europe", it'll make the mistake of relating "school" to "bright", which is nonsense. This would be the case if we train a vectorizer model on Hakisa's random input mappings.
+However, if we have a ready-made data, which could be the sentence "At school, we had computing class, but my computer keyboard was broken", our vectorizer would correctly relate the word "keyboard" to "computer", or "broken". It could relate "keyboard" to "school", but it'll also relate it to "computing" and "class".
+I presume this would be the case if we used a ready-made data where in the state A, the command is properly labeled as "Jump".
+
+For this reason, I'd recommend creating a dataset composed of game frames(which can be captured using the `mss` module. It doesn't lag your game, I promise!) and labeling each frame manually(if you can find a way to automatize this, I'd love to know it).
+You don't need to capture a single frame each second as Hakisa does, but it might be important to capture a number of frames related to the probability of you being subject to each situation. Example: in Jigoku Kisetsukan, if you want Hakisa to play on harder modes, it might not be a good idea to use frames which have no bullets on the screen(and it might also be good to use frames when you're in the game over screen,hehe).
+
+It might still be possible to use Hakisa's exploration mode to generate data for vectorization, but this would rely on using a memory_size <<<<<<< explore_steps, so it might take less time to simply create your own dataset.
 
 Study Mode will probably have to be modified: instead of simple Supervised Learning, we'll also train a Vector Embedding Layer for each action command. So we'll have `command_type` being one-hot encoded and then serving as input for this vector embedding layer, which will throw an output with the same size as the input, which will then be passed into a Cross Entropy having the input as target. The same thing will be applied to `action1` and `action2`.
 
-Those vector embedding layers will be used to create our input_mapping dictionary, which will now be used to convert Hakisa's outputs into input commands. KNN will have to be properly fitted again.
-*In the exploration mode, Hakisa will simply choose a random integer which will serve as an index for the list of input mappings generated upon calling the `Dataset` class*
+Those vector embedding layers will be used to create our input_mapping dictionary, which will now be used to convert Hakisa's outputs into input commands. KNN will then be properly fitted again.
+~~*In the exploration mode, Hakisa will simply choose a random integer which will serve as an index for the list of input mappings generated upon calling the `Dataset` class*~~
 
 Categorical Cross Entropy will be used to optimize the vector embedding layers, while Mean Squared Error will be used to optimize Hakisa's output(remember that Hakisa's output will be a vector, a single number).
-
-*Perhaps one could simply add Pytorch's Embedding layers in order to do this...but meh*
