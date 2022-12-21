@@ -2,7 +2,17 @@
 
 This branch is just to organize the code and keep the spaghetti away from the main branch
 
-## Currently Testing: Vectorization and Softmax
+## Currently Testing: Attention Layers
+
+I'm not really in the field of programming as I do this for fun, but after reading papers about the state-of-the-art models in NLP, reading the RainbowDQN code and the Waveglow paper, I'm pretty sure that Attention Layers might be a technique so essential for newer models as the Conv2D layers became a few years ago.
+
+Considering this, it might be interesting to test Attention Layers to Hakisa, mainly the MultiHead Attention used in Transformer. We can adapt its architecture in order to make it less computationally expensive(though might be less efficient) and make it assign weights to each pixel in an input frame, remarking the most relevant ones, in a process that is similar to what is done by Conv2Ds and MaxPooling in VGG19.
+
+If everything goes alright, it might be possible to reduce a bit the amount of layers in our models, and maybe even make them more easy to handle with a personal computer without losing so much accuracy.
+
+Currently testing this possibility for a model that generates pseudolabels for the images dataset, the Coach.
+
+## Currently Testing²: Vectorization and Softmax
 
 The tests for vectorization before running Hakisa will continue on the main branch. Here, I'll be testing the more traditional approach for Reinforcement Learning: using Embedding layers and Softmax activation function.
 
