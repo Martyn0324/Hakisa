@@ -12,10 +12,6 @@ If everything goes alright, it might be possible to reduce a bit the amount of l
 
 Currently testing this possibility for a model that generates pseudolabels for the images dataset, the Coach.
 
-**UPDATE:** The Attention Layer seem to provide interesting results, having been tested and compared with a simple CNN for classifying Fashion MNIST and CIFAR10. Those experiments can be seem [here](https://github.com/Martyn0324/Hakisa/blob/Tests/Preprocessing/TesteAttentionLayer.ipynb).
-
-Its main advantage is the greatly reduced training time, as it has way less parameters(10 epochs in Fashion MNIST takes around 15 minutes with batch 4096 in Google Colab, while the CNN takes around 1 hour). It seem, however, still able to have a similar performance than that of a classic CNN for classification.
-
 ## Currently Testing²: Vectorization and Softmax
 
 The tests for vectorization before running Hakisa will continue on the main branch. Here, I'll be testing the more traditional approach for Reinforcement Learning: using Embedding layers and Softmax activation function.
