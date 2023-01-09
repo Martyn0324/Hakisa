@@ -12,6 +12,8 @@ If everything goes alright, it might be possible to reduce a bit the amount of l
 
 Currently testing this possibility for a model that generates pseudolabels for the images dataset, the Coach.
 
+**UPDATE:** This type of layer seems promising. It has been tested for classification task with Fashion MNIST and CIFAR100 and those tests can be checked [here](https://github.com/Martyn0324/Hakisa/blob/Tests/Preprocessing/TesteAttentionLayer.ipynb). If my expectations are correct, then we could make a Feature Extractor with way less parameters, thus less computationally expensive.
+
 ## Currently Testing²: Vectorization and Softmax
 
 The tests for vectorization before running Hakisa will continue on the main branch. Here, I'll be testing the more traditional approach for Reinforcement Learning: using Embedding layers and Softmax activation function.
@@ -26,10 +28,12 @@ The main goal stills the same: creating a RL AI that is able to run on a persona
 
 The whole process that would be done by the vectorizer model will be done by Hakisa. Since Hakisa already has feature extraction layers, some embedding layers will be added. The output of the feature extraction and of the embedding layers will be concatenated and this result will be passed through linear layers. The output will be passed through a softmax function, generating Hakisa output.
 
-In order to avoid big output sizes, this process will be done in separate layers according to each action, but the command type selected will still condition the action 1 and action2 selected.
+In order to avoid big output sizes, this process will be done in separate layers according to each action, but the command type selected will still condition the action1 and action2 selected.
 
 
 This method might discard the necessity of labeling each frame in your dataset, since the embedding layer will be optimized to generate vectors that provide the best loss, but only for **Play mode**. If the study mode is to be kept this way, then labeling the dataset will be necessary so Hakisa can associate states to actions.
+
+**UPDATE:** I have discovered that what I've been refering to as "Vectorizer Model" is called, in Reinforcement Learning terminology, as "Policy", which can be a simple algorithm or a Neural Network model. This will be considered in the next updates.
 
 ## Possibility: Self-learning and Reinforcement Learning
 
