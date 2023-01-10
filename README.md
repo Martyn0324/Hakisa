@@ -103,3 +103,17 @@ Those vector embedding layers will be used to create our input_mapping dictionar
 ~~*In the exploration mode, Hakisa will simply choose a random integer which will serve as an index for the list of input mappings generated upon calling the `Dataset` class*~~
 
 Categorical Cross Entropy will be used to optimize the vector embedding layers, while Mean Squared Error will be used to optimize Hakisa's output(remember that Hakisa's output will be a vector, a single number).
+
+
+### References
+
+[Huang, Shengyi et al. The 37 Implementation Details of Proximal Policy Optimization](https://iclr-blog-track.github.io/2022/03/25/ppo-implementation-details/): This blog is simply **glorious**
+https://github.com/liuruoze/HierNet-SC2/blob/main/algo/ppo.py
+
+[Ruo-Ze, Liu et al. An Introduction of mini-AlphaStar](https://arxiv.org/pdf/2104.06890.pdf)
+[Ruo-Ze, Liu et al. On Efficient Reinforcement Learning for Full-length Game of StarCraft II](https://arxiv.org/pdf/2209.11553.pdf)
+[Ruo-Ze, Liu. Rethinking of AlphaStar](https://arxiv.org/pdf/2108.03452.pdf)
+
+[Reinforcement Learning Classes from Didática Tech(PT-BR)](https://didatica.tech/curso-aprendizado-por-reforco-algoritmos-geneticos-nlp-e-gans/)
+
+~~ChatGPT...despite some misinformation~~
