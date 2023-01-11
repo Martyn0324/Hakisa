@@ -43,6 +43,15 @@ In this ClassicRL model, if we were to replace the single layer that creates a p
 Thanks to this separation between action1 and action2, it's not the softmax(or, more precisely, the Policy Probability Distribution) that will make Hakisa transform your GPU into a barbecue, it's actually the feature extracting layers, which were made based on VGG19, following the pattern Conv2D -> Conv2D -> MaxPool2D.
 If we were to optimize Hakisa and make her less computationally expensive, we must focus on those layers.
 
+**Update³:**
+
+https://user-images.githubusercontent.com/28028007/211701093-b4c789c0-cac4-4a2d-8131-6e7e9a5dcdc7.mp4
+
+This is the result for the Successful Prototype after training for 120 steps(5 minutes). The reward consisted of simply the game score passed to a log10.
+One can notice that Hakisa learned more or less that she must avoid the bullets, and that if she uses her bombs she kills all enemies, thus gets easy points.
+
+The complete code can be found [here](https://github.com/Martyn0324/Hakisa/blob/Tests/SuccessfulPrototype.ipynb) with each cell output recorded, so you can see more or less what happens.
+
 ## Possibility: Self-learning and Reinforcement Learning
 
 Getting data for Hakisa is quite fun: all you have to do is play a game with a screengrabber on. However, labeling those images is quite tough. It's time consuming, boring and might attract some tendonitis... For this motive I was trying to make a good model to label games screenshots.
