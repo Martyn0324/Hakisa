@@ -111,11 +111,11 @@ Categorical Cross Entropy will be used to optimize the vector embedding layers, 
 
 https://github.com/liuruoze/HierNet-SC2/blob/main/algo/ppo.py
 
-[Ruo-Ze, Liu et al. An Introduction of mini-AlphaStar](https://arxiv.org/pdf/2104.06890.pdf)
+[Liu, Ruo-Ze et al. An Introduction of mini-AlphaStar](https://arxiv.org/pdf/2104.06890.pdf)
 
-[Ruo-Ze, Liu et al. On Efficient Reinforcement Learning for Full-length Game of StarCraft II](https://arxiv.org/pdf/2209.11553.pdf)
+[Liu, Ruo-Ze et al. On Efficient Reinforcement Learning for Full-length Game of StarCraft II](https://arxiv.org/pdf/2209.11553.pdf)
 
-[Ruo-Ze, Liu. Rethinking of AlphaStar](https://arxiv.org/pdf/2108.03452.pdf)
+[Liu, Ruo-Ze. Rethinking of AlphaStar](https://arxiv.org/pdf/2108.03452.pdf)
 
 [Reinforcement Learning Classes from Didática Tech(PT-BR)](https://didatica.tech/curso-aprendizado-por-reforco-algoritmos-geneticos-nlp-e-gans/)
 
