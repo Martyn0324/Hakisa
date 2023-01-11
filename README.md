@@ -48,7 +48,7 @@ If we were to optimize Hakisa and make her less computationally expensive, we mu
 https://user-images.githubusercontent.com/28028007/211701093-b4c789c0-cac4-4a2d-8131-6e7e9a5dcdc7.mp4
 
 This is the result for the Successful Prototype after training for 120 steps(5 minutes). The reward consisted of simply the game score passed to a log10.
-One can notice that Hakisa learned more or less that she must avoid the bullets, and that if she uses her bombs she kills all enemies, thus gets easy points.
+One can notice that Hakisa is beginning to learn that she must avoid the bullets, and that if she uses her bombs she kills all enemies, thus gets easy points.
 No Supervised Learning pre-training was used in this video's case.
 
 The complete code can be found [here](https://github.com/Martyn0324/Hakisa/blob/Tests/SuccessfulPrototype.ipynb) with each cell output recorded, so you can see more or less what happens.
