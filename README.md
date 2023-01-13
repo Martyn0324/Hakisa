@@ -83,7 +83,7 @@ However, if we do attach it to Hakisa, in order to avoid the possibility of "che
 
 Even though Tesseract might be good for Optical Character Recognition, it's efficiency for recognizing characters in some games is seriously compromised. It has too much trouble when trying to recognize characters in Jigoku Kisetsukan, a few less for Bullet Heaven, but still.
 
-Since our reward function is based on characters extracted by OCR, this poor performance can severely damage Hakisa's performance or even lead to [Specification Gaming]((https://www.deepmind.com/blog/specification-gaming-the-flip-side-of-ai-ingenuity)), since Tesseract will make the reward be high when it should be low, and vice-versa.
+Since our reward function is based on characters extracted by OCR, this poor performance can severely damage Hakisa's performance or even lead to [Specification Gaming](https://www.deepmind.com/blog/specification-gaming-the-flip-side-of-ai-ingenuity), since Tesseract will make the reward be high when it should be low, and vice-versa.
 
 While testing the TraditionalRL model for Jigoku Kisetsukan(reward function = +1 if life => 1, else 0), there was no problem. Meanwhile, in Bullet Heaven 2, making OCR extract the score from the screen(reward = log10(score)) resulted in a reward of log10(200,000) = 5.3 or even log10(200,000,000) = 8.3 when the reward should actually be log10(250) = 2.3. Sometimes the score even was 0, but somehow OCR was identifying a number different than 0.
 
