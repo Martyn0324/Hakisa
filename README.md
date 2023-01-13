@@ -77,3 +77,22 @@ In this case, the reward model would be trained in a similar way than the teache
 If we don't attach this model to Hakisa, it could be in evaluation mode during the Reinforcement Learning stage.
 
 However, if we do attach it to Hakisa, in order to avoid the possibility of "cheating" [Hakisa giving rewards to herself when she actually doesn't deserve it](https://www.deepmind.com/blog/specification-gaming-the-flip-side-of-ai-ingenuity), we could make the reward model in evaluation mode during most of the Reinforcement Learning stage, with it backing optimized only after a N number of steps, as Hakisa performance changes (if everything goes right, for the better). Though I don't know exactly how this backpropagation could work.
+
+
+## To Consider: Testing Alternatives to Pytesseract
+
+Even though Tesseract might be good for Optical Character Recognition, it's efficiency for recognizing characters in some games is seriously compromised. It has too much trouble when trying to recognize characters in Jigoku Kisetsukan, a few less for Bullet Heaven, but still.
+
+Since our reward function is based on characters extracted by OCR, this poor performance can severely damage Hakisa's performance or even lead to [Specification Gaming]((https://www.deepmind.com/blog/specification-gaming-the-flip-side-of-ai-ingenuity)), since Tesseract will make the reward be high when it should be low, and vice-versa.
+
+While testing the TraditionalRL model for Jigoku Kisetsukan(reward function = +1 if life => 1, else 0), there was no problem. Meanwhile, in Bullet Heaven 2, making OCR extract the score from the screen(reward = log10(score)) resulted in a reward of log10(200,000) = 5.3 or even log10(200,000,000) = 8.3 when the reward should actually be log10(250) = 2.3. Sometimes the score even was 0, but somehow OCR was identifying a number different than 0.
+
+In HierNet, the informations for the reward function are extracted by capturing different screen regions, such as the minimap and the screen.
+
+![image](https://user-images.githubusercontent.com/28028007/212362467-91eeaf9b-11ae-4b5d-93b5-bd5d5ba7aabc.png)
+
+![image](https://user-images.githubusercontent.com/28028007/212363050-5e9f035b-cb28-41c4-8059-2766328dfe42.png)
+
+Hakisa isn't a Hierarchical Network, as this architecture would be too computationally expensive. She could, yes, learn how to iddentify important features to determine how well her performance is being in in Study Phase, or Supervised Learning mode, but this would go to waste in RL due to Pytesseract.
+
+The only way to avoid such problems in the reward function, then, is to either simply not using Tesseract, or to train another model, specifically for character recognition in the game you want to play. The latter might be more efficient, as this can be done by a shallow model if you use a small input, but there's the problem of labeling a dataset...
