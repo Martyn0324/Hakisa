@@ -7,6 +7,17 @@ However, unfortunately, Serpent also relies on many, MANY intermediaries, which 
 
 By removing those intermediaries(at least during training) and by having greater access and control over the algorithm we're going to use, it's possible to diminish the time between steps to around 1.3 seconds.
 
+### UPDATE - PPO2 IMPLEMENTATION USING GYM RETRO ENVIRONMENT
+
+https://github.com/Martyn0324/Hakisa/assets/28028007/7b2da36c-1675-4f11-922c-72cfeff6b222
+
+This video was recorded after an exploration phase with 1000 steps, which means the model was trained with 1000 samples.
+The training ocurred during 10 epochs without early-stopping as its criterion wasn't reached (KL Divergence between policies greater than 0.05).
+
+Such low number of samples, together with the low diversity of the states got in exploration phase (which indeed consisted basically of Chun Li standing still, attacking randomly),
+justify the model's behaviour.
+
+
 ## General
 
 Initially, we'll use no dataset. The only thing we're going to use is an input map. This input map is a list of commands in a specific structure `('command_action')` which will be used, in the Pytorch's Dataset class in order to generate a dictionary, where each input map(key) will be assigned to a value between -1 and 1.
