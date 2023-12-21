@@ -109,7 +109,7 @@ Categorical Cross Entropy will be used to optimize the vector embedding layers, 
 
 [Huang, Shengyi et al. The 37 Implementation Details of Proximal Policy Optimization](https://iclr-blog-track.github.io/2022/03/25/ppo-implementation-details/): This blog is simply **glorious**
 
-https://github.com/liuruoze/HierNet-SC2/blob/main/algo/ppo.py
+Ruo-Ze Liu's implementation of PPO2: https://github.com/liuruoze/HierNet-SC2/blob/main/algo/ppo.py
 
 [Liu, Ruo-Ze et al. An Introduction of mini-AlphaStar](https://arxiv.org/pdf/2104.06890.pdf)
 
@@ -117,7 +117,16 @@ https://github.com/liuruoze/HierNet-SC2/blob/main/algo/ppo.py
 
 [Liu, Ruo-Ze. Rethinking of AlphaStar](https://arxiv.org/pdf/2108.03452.pdf)
 
+[Yang Yu, Eric. Coding PPO From Scratch With Pytorch](https://medium.com/analytics-vidhya/coding-ppo-from-scratch-with-pytorch-part-1-4-613dfc1b14c8)
+
 [Reinforcement Learning Classes from Didática Tech(PT-BR)](https://didatica.tech/curso-aprendizado-por-reforco-algoritmos-geneticos-nlp-e-gans/)
 
+[Weng, Lilian. A (Long) Peek into Reinforcement Learning](https://lilianweng.github.io/posts/2018-02-19-rl-overview/) - How could I forget Lil's Log? Especially since she's a Research Leader from OpenAI...
 
-~~ChatGPT...despite some misinformation~~
+[OpenAI's Spinning Up, by Joshua Achiam](https://spinningup.openai.com/en/latest/spinningup/spinningup.html) - The introduction is wonderfully awesome for catching up with terminology (seriously, maybe even folks from the field mix things up). It's also full of interesting hyperlinks.
+
+[Irpan, Alex. Deep Reinforcement Learning Doesn't Work Yet](https://www.alexirpan.com/2018/02/14/rl-hard.html) - A comforting post on why your Deep RL model may not be working. The problem is not always between the screen and the chair. However, this piece is also a Deep Reinforcement Learning model...a biological one, and it may be able to learn and try some tricks to make the silicon model have a higher chance of working.
+
+[Fish, Amid. Lessons Learned Reproducing a Deep Reinforcement Learning Paper](https://amid.fish/reproducing-deep-rl)
+
+~~ChatGPT...despite some misinformation~~ - Seriously, don't use ChatGPT. Not even Bing's. At most, ask it to summarize texts on this subject.
