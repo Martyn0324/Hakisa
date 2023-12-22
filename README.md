@@ -17,6 +17,21 @@ The training ocurred during 10 epochs without early-stopping as its criterion wa
 Such low number of samples, together with the low diversity of the states got in exploration phase (which indeed consisted basically of Chun Li standing still, attacking randomly),
 justify the model's behaviour.
 
+### UPDATE² - DEEP Q-LEARNING IMPLEMENTATION USING GYM RETRO ENVIRONMENT
+
+https://github.com/Martyn0324/Hakisa/assets/28028007/90dd31ea-cbf9-4cde-a385-de0f74c4fd60
+
+This one was also recorded after an exploration phase with 1000 steps, which means the model was trained with 1000 samples, during 10 epochs.
+No early-stopping was used under any criterion.
+
+The reward function was customized (that is, the original reward given by Gym was replaced by a custom one),
+another exploration phase was ran for 1000 steps.
+After that, the consolidation phase was conducted for 2 epochs.
+This was the result:
+
+https://github.com/Martyn0324/Hakisa/assets/28028007/ba028a2c-5b6b-4857-8d7a-71d65295ab20
+
+
 
 ## General
 
