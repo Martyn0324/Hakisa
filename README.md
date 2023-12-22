@@ -31,6 +31,16 @@ This was the result:
 
 https://github.com/Martyn0324/Hakisa/assets/28028007/ba028a2c-5b6b-4857-8d7a-71d65295ab20
 
+### UPDATE³ - EVOLUTIONARY ALGORITHM ON REINFORCEMENT LEARNING
+
+https://github.com/Martyn0324/Hakisa/assets/28028007/ef8d9c11-2e4a-4800-90d6-679579799b7f
+
+This one was optimized using evolutionary algorithms, from a population with 20 different models.
+The population was evaluated for 5 generations/epochs, and after each generation, the 10 most fit were selected
+to duplicate, eliminating the 10 less fit. Each generation was composed of 1000 iterations.
+
+The number of mutations decreased as the generation increased. The fitness function was a custom reward fuction
+with all rewards obtained through a generation multiplied by a discount (uncertainty) factor.
 
 
 ## General
