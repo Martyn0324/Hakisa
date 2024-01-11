@@ -7,6 +7,17 @@ However, unfortunately, Serpent also relies on many, MANY intermediaries, which 
 
 By removing those intermediaries(at least during training) and by having greater access and control over the algorithm we're going to use, it's possible to diminish the time between steps to around 1.3 seconds.
 
+### UPDATE - TRYING TO IMPLEMENT DEEP Q-LEARNING ON BULLET HEAVEN 2 (PROTOTYPE)
+
+https://github.com/Martyn0324/Hakisa/assets/28028007/8933fb8f-8ef4-46de-8a76-88b8ebd8061f
+
+This video was made using `Play And Learn` method (not recommended), with reward models ill-trained (trained on only 100 samples) and using Hakisa with 8 feature extraction layers + 3 action layers.
+Such amount of layers provided a much faster computation time - especially during backpropagation - and, thus, a much faster reaction time.
+
+It's possible that, with better trained reward models and using Study Mode + Exploration + Consolidation, her performance may increase.
+
+Once again, she appeared to be using her bombs right at the beginning to maximize her score. Another problem that appeared is that, when too many shots are on the screen, she appears to confuse them with coins and try to grab them.
+
 ### UPDATE - PPO2 IMPLEMENTATION USING GYM RETRO ENVIRONMENT
 
 https://github.com/Martyn0324/Hakisa/assets/28028007/7b2da36c-1675-4f11-922c-72cfeff6b222
