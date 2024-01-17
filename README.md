@@ -7,6 +7,71 @@ However, unfortunately, Serpent also relies on many, MANY intermediaries, which 
 
 By removing those intermediaries(at least during training) and by having greater access and control over the algorithm we're going to use, it's possible to diminish the time between steps to around 1.3 seconds.
 
+## Summary/Résumé
+
+Reinforcement Learning consists essencially on the use of a function with optimizable parameters that will be optimized towards a specific task through the feedback it receives while executing such task.
+
+A function with optimizable parameters can be viewed as an Artificial Intelligence, which can be, then, a model like Linear Regression, Decision Tree, KNN, etc. When using Neural Networks, Reinforcement Learning can bend with Deep Learning, categorizing Deep Reinforcement Learning.
+
+There are some problems around the terminology in Reinforcement Learning due to its specificity. First of all, the task that is going to be executed is divided into states. For each state, there are many possible actions, as well as it's possible to assign a value for each state (some states are more desirable than others).
+
+Out of many methods of implementing Reinforcement Learning, there are 2 main cathegories: Policy Methods and Action-Value Methods:
+
+* Policy Methods: Uses 2 functions, a Policy Function to generate actions, and a Value Function to determine the value for the next state.
+* Action-Value: Uses a single function which is both Policy and Value Function. The idea is that the function will determine a value for each possible action that can be chosen for a given state. The action with highest value tends to be chosen (`.argmax()`)
+
+When implementing a Policy Function and a Value Function, one can unify both to make an Actor-Critic function, generating 2 different outputs: the probability of each action (policy) and the value prediction.
+
+The value of each state is often based on the reward function, which provides a feedback for the model.
+
+However, one big problem Reinforcement Learning has is its instability. In fact, it's often difficult to reproduce results, even when using the same hyperparameters, reward and environment. Not only that, but it's also hyperparameter sensitive. For these motives, it's quite common to avoid training the model online - when the model both interacts and learns from the environment - and prefer to train it offline - that is, the model collects data from the environment by interacting with it, then, after this interaction if finished, the model is submitted to a training process similar to Supervised Learning.
+
+### Optimization Methods
+
+Offline training is what is commonly used with Proximal Policy Optimization (PPO), developed by OpenAI - the most proeminent enterprise in the field of RL -. During exploration, the data collected provides information on the environment state, the action the policy model executed, the reward obtained and the predicted value for the next state. When the exploration is finished, the policy and value models are submitted to a "replay", receiving each collected state as input and generating their respective outputs. The value model is penalized when it diverges from predicting the sum of the next state value with the reward value. The policy, however, is trained with a surrogate loss that tries to push it a bit away from generating the same outputs, while also constraining and penalizing it for diverging too much from the previous policy. In PPO2, an early-stopping criterion is used to avoid making the policy becoming too divergent, that is the KL-Divergence between the current policy output and the previous policy output.
+
+The final loss will be, then, a weighted sum between the surrogate loss (which tends to have a higher weight), the value loss (which is a Mean Squared Error) and the entropy loss (which penalizes the policy for generating low diversity outputs). This aims to avoid both the situation where the model is always generating the same output and the situation where it gets completely random.
+
+**However, my experiments in Street Fighter II showed that, contrary to the expected, PPO is quite prone to generating exactly what is aims to avoid. Not only the method is much more slow and computationally expensive due to the tons of mathmatical operations it requires, it also forces the model to "not learn too much", which makes absurdly big datasets and training time a must. Not only that, but you may also just lose your time creating a big dataset, as the early-stopping may make the model stop training right at the beginning of the process. Theorically, this avoids model collapse or performance drop, but the difficulty encountered while trying to find the perfect hyperparameters for PPO makes it a bit dubious...**
+
+Unlike PPO, Q-Learning is the main technique used for Action-Value method and, though it's a bit old, rumours suggests that it has been recently discovered by OpenAI and [may be used to](https://arxiv.org/pdf/2102.04518.pdf) [train GPT-5](https://arxiv.org/pdf/2305.20050.pdf). Q-Learning is commonly represented by tabular search, where each specific state is mapped to a specific value by a model. Sometimes the value is the reward itself, and the model may not even be an optimizable function at all, being simply a bot that interacts with the environment and consults the table to see how it's going.
+
+However, it's also possible to implement Q-Learning through the use of Machine Learning models. The most known case is Deep Q-Learning Network (DQN), which uses a Neural Network to map both the possible value for each state. This can be interpreted as mapping the value for each action given a certain state. With that, in order to extract the best action for that state, we just have to extract the value index.
+
+I took some time to understand that. But, once you do, DQN gets much more intuitive and easier to implement. It doesn't require thousands of mathmatical operations to be done manually. The only excentric element is the sampling schedule, like epsilon-greedy, which is a method that randomly samples an element from the output generated by the model in order to generate a random action and make the states collected more diverse, thus helping during learning. Besides that, all one needs to do is make your model generate its outputs, extract the actions to apply on the environments, and compare the model outputs with the same outputs summed together with the reward.
+
+Actually, there's another technical detail: it's good to use a target network, which is a copy of the model, to generate the values that will be summed with the reward and act as targets from the loss (MSE). This provides greater stability as the target network may have its optimization delayed by some iterations.
+
+**My experiments with Street Fighter II showed that, despite the spotlights lying on PPO, this method is much easier to tune, less computationally expensive (unless your model is too big) and much faster. It also seems more resilient to failure modes, but it also seems more sensitive to the reward function. Using discrete Rewards (rewards given only after a big event happens in the game, like win or lose) may be greatly troublesome here. I recommend sparing some time to [train reward models](https://proceedings.neurips.cc/paper_files/paper/2022/file/b1efde53be364a73914f58805a001731-Paper-Conference.pdf)**
+
+
+Finally, there's also the method where one can use Genetic Algorithms to select the best policy network for the given environment. I'm pretty fond of GAs, but unfortunately creating multiple copies of a Neural Network, applying mutations to their parameters and making complete iterations through the whole dataset with each one of them is too computationally expensive and too slow. However, it may also be a considerable option when using shallow models and as a preliminary stage to DQN.
+
+## General
+
+Given the previous text, it's easier to trace a method to implement Hakisa.
+
+We will use an input mapping divided into 3 types of actions: `command_type`, `action_1` and `action_2`. This cathegorization is mandatory in order to make working with mouse inputs easier and avoid memory issues, since in a screen with 1920x1080 dimensions, there are 1920 X coordinates and 1080 Y coordinates for mouse positioning, thus 2,073,600 different possibilities of outputs. It's easier to blow up your memory with such output size, and using a bottleneck layer may cause great information loss. By assigning 1920 X possibilities to an action 1 and 1080 Y possibilities to action 2, we don't lose our 2 million total possibilities, but we can now work with 2 different layers that will have to deal with much less data, and the need for information compression will be much lower - If we were to use a bottleneck layer that provided an output with size 1, and this output was passed to an linear layer which provides an output 2,073,600, we would have almost the same number of parameters as using one layer with input 512 and output 1920 + one layer with input 1024 and output 1080.
+
+In this case, `command_type` will determine wheter the action is a keyboard command, a mouse movement, right click or left click. `action_1` stands for the keyboard key to be pressed (as a string) or the X coordinate for the mouse input, while `action_2` stands for the Y coordinate for mouse input, or simply `None` for keyboard input.
+
+Hakisa will receive as inputs the frame of the game she must play, and will generate multiple outputs for each action type. Since she will be a Deep Q-Learning Network, each output for each action type corresponds to a value for an action (so no activation functions will be used in the final layers). This action can be extracted by using the index of that value, and this index can be used in the input mapping list (also divided into three action types) to extract the action string that will be performed.
+
+Hakisa will be used to play complex games and, as such, we can expect a hard time with instability. For this motive, her training will be divided into 5 stages:
+
+* **Human Teacher Phase** : The human will play the game, with the state (game frame), actions and rewards being stored. This data will be used to create a dataset. The human actions will also be one-hot encoded in order to be used as labels in the next phase
+* **Study Phase**: Hakisa will be trained in a Supervised Learning configuration. Each state from the dataset will be passed to her, and the outputs will be compared with the human actions which will work as labels. The idea is to make her try to mimetize the human gameplay, which may make her acquire an average or, at least, a beginner skill level on the game.
+* **Exploration Phase**: Hakisa will play the game by herself, generating new data for the next stage.
+* **Consolidation Phase**: The acquired data (game frames and rewards) will be passed to Hakisa again and to the target network, optimizing Hakisa in a Reinforcement Learning manner.
+* **Play (and learn?)**: Hakisa plays the game freely in evaluation mode. One can also collect new data here to train her again posteriourly.
+
+Note that Reinforcement Learning is actually applied as a fine-tuning to the Supervised Learning method. This is used to make the process less unstable (note that even in OpenAI's GPT-4, Reinforcement Learning was applied to fine-tune GPT-3. The same happened to OpenAI's Five in Dota 2, to DeepMind's AlphaStar in StarCraft 2 and to Ruo-Ze Liu's HierNet, also in StarCraft 2).
+
+The Exploration Phase may be an optional stage, with one possibly using the human dataset for Reinforcement Learning in Consolidation Phase. However, that may not be productive if the same data has already been used in Supervised Learning.
+
+One may also consider to unify Exploration and Consolidation Phase into a single Play and Learn phase, but that may also be too prone to unstability (it was already troublesome in Street Fighter II).
+
+
 ### UPDATE - PPO2 IMPLEMENTATION USING GYM RETRO ENVIRONMENT
 
 https://github.com/Martyn0324/Hakisa/assets/28028007/7b2da36c-1675-4f11-922c-72cfeff6b222
@@ -41,104 +106,6 @@ to duplicate, eliminating the 10 less fit. Each generation was composed of 1000 
 
 The number of mutations decreased as the generation increased. The fitness function was a custom reward fuction
 with all rewards obtained through a generation multiplied by a discount (uncertainty) factor.
-
-
-## General
-
-Initially, we'll use no dataset. The only thing we're going to use is an input map. This input map is a list of commands in a specific structure `('command_action')` which will be used, in the Pytorch's Dataset class in order to generate a dictionary, where each input map(key) will be assigned to a value between -1 and 1.
-
-We will, then, use a loop to make our neural network, Hakisa, play a game which will be our active window. With each step, a screenshot will be taken in real time and passed as input to Hakisa, which will then generate an output accordingly.
-
-Since Neural Networks can only generate floats, the outputs generated by Hakisa will be passed to a K-Nearest Neighbors that has been fitted to that dictionary values in order to get the value that is closest to Hakisa's output. With that value, we can get the dictionary key that will, then, be used to execute a command through PyAUTOGUI module.
-
-Hakisa will have 3 learning modes: exploration, study and play.
-
-### Exploration Mode
-
-Hakisa will simply play the game and ~~generate outputs according to the images she's receiving~~ she'll now generate random outputs, independently of the image she's receiving. Each step will generate a memory for Hakisa(that will actually be part of the Dataset class, not Hakisa class) composed of the input frame, the output key in the input mapping, its value and the reward obtained. This memory will, posteriorly, be our dataset for the study mode.
-
-At each step, a tuple `(frame, key, value, reward)` will be added to the memory. If the memory gets full(as defined when initializing Dataset class), the items with lower rewards will be discarded in order to add the new items.
-
-In this mode, it's important that Hakisa generates outputs as diverse as possible ~~, so avoid using weights initialization through normal or uniform distribution.~~ Hakisa's network won't be used at all.
-
-### Study Mode
-
-We'll use Hakisa's memory to generate a classic dataset for machine learning. Each frame will serve as input, and each value, a label. As criterion, we'll use MSE Loss.
-
-This stage works as a way to make Hakisa identify patterns in each situation in the game and associate those situations with a value(controller command) that is best suited for a situation. The input is a frame where a projectile is coming towards your character? Then the best output is the one associated with the command "move left" or "move right". There's an enemy in the input frame? The best output is the one associated with the command "shoot".
-
-Of course, not necessarily Hakisa's memory will contain exactly the best output for that situation. For this motive, it's important to use a memory size smaller than the number of exploration steps. This way, the memory will tend to have the best outputs for specifics situations.
-
-You can also use a ready-made dataset, with frames captured by you when you were playing and labels defined by yourself(maybe there's some way to properly capture mouse/keyboard commands in real time...)
-
-**EDIT:** Now Hakisa will also try to predict the reward she'll get in that step. This prediction will be passed to another loss having the actual reward as target.
-The Study Loss will then be: study_loss = cross_entropy(command_type_output, command_type_label) + mse(action1_out, action1_label) + mse(action2_out, action2_label) + mse(predicted_reward, actual_reward).
-
-### Play Mode
-
-Here, Hakisa will use what she learned in the previous stages and play all by herself. At each step, a screenshot will be taken and passed to Hakisa as input, and she'll generate an output accordingly.
-
-**EDIT:** Now, Hakisa will also receive the previous output actions and the previous reward received.
-
-We're gonna be using a custom loss function, GameplayLoss, which will use the reward generated by Hakisa's command in order to get gradients for backpropagation. This function is log based so the gradients returned are bigger as the reward decreases, and smaller as the reward increases.
-
-This way, Hakisa can correct some associations she made in the study mode, probably because she didn't get exposed to determined situations or because she didn't generate the best output for that situation during the exploration mode.
-
-This way, Hakisa can play and get better and better as she plays, all by herself.
-
-**EDIT: The GameplayLoss function is actually making Hakisa's outputs as random as when she's on Exploration mode. Possible corrections might be using cumulative rewards during exploration mode or simply remaking/replacing this function. Softmax and Cross-Entropy Loss must be avoided in order to avoid great output sizes.**
-
-**EDIT²: The GameplayLoss function will indeed have to be remade or replaced, as its gradients makes Hakisa generate outputs that will only correspond on the extreme commands in the input mapping dictionary (she'll only generate the command for -1 and for 1).**
-
-**Also good consideration for gameplay loss function: Liu, Ruo-Ze et al. Rethinking of AlphaStar: https://arxiv.org/pdf/2104.06890.pdf . - Still uses Categorical Cross Entropy, but might be a good inspiration.**
-
-
-# Update and possible upgrades
-
-While testing my NLP models(and also chatting in Python's Discord server) I've learned that softmax can't really be avoided. The motive is simple: numbers have a correlation between each other, but our input mappings, just like words and sentences, don't. The input map `press X` isn't bigger or smaller than `click (512, 600)`.
-
-This can only be avoided by the use of categories. In a Classifier, for example, the number `0` can be the label `Dog`, while `1` can be `Cat`, and there's no mathematical relation between `Dog` or `Cat`, they're simply categories. This is learned with time by the classifier, through the use of a softmax or sigmoid function.
-In NLP, each word is assigned to an integer, which works as a label. Letter `a` can be the label `0`, `b` be `1`, `c`, `2` and so on. This relation comes up as the model trains. The same happens with Reinforcement Learning models, like Rainbow DQN, or even the Hierarchical AlphaStar.
-
-However, there's a way to avoid having to use softmax, despite this...kinda. In NLP, it's used the technique `word2vec`, which converts words to vectors, that is, a single value. `word2vec` in fact, consists on the use of algorithms to associate words to specific values and it's included in the embedding layers, commonly used in NLP models and it's used in the mentioned paper above. It makes the word `apple` has a vector closer to `fruit` than to, let's say, `car`.
-
-For Hakisa, we could do something like that to make associations between certain input mapping and a vector. `press X` can be associated with the number `0.75` and `press Z` can be associated with `0.76`, while `click (512, 600)` can be associated with `0.10`.This technique, however, requires one-hot encoding and the use of softmax, which can be make things computationally expensive.
-However, we could create a separate model, disconnected from Hakisa, that would be trained separately to convert each input map to a vector. After its training has been complete, it would be used to generate the dictionary of input mappings for Hakisa. After that, we'll continue making things as we do right now.
-
-
-*I'll be testing this idea with NLP models and see if this works and if I should make some adjustments. Consider this text if you want to test Hakisa.*
-
-### Vector Embedding
-
-Applying vector embedding is promising and, differently from what I'm doing, is something that actually makes mathematical sense.
-This technique is usually associated with NLP, so I think the best way to understand it for Hakisa is to relate it to NLP.
-
-In Vector Embedding, we use a quite shallow network(or maybe some other simple model) to extract context from a given input and assign a vector to it. Our input can be a single word, an entire sentence or words n-grams. The closer a token vector is from another, the closer is their meaning. I suppose that the technique is more efficient with n-grams or sentences(It's hard to extract context from a single word, lost in the abyss, isn't it?).
-
-Vector Embedding can be quite efficient in NLP when you're dealing with a reasonable amount of data(which can be understood as: you're not just playing with some dozens of words).
-
-For Hakisa, this can be quite good for games that use mouse, since we can get up to 4, 5 or even 6 million possible commands. However, this is quite an annoyance for games that only uses the keyboard, which will have few possible inputs.
-We also want to avoid directly working with millions of data in our input mapping since this will make it mandatory to use cloud servers CPUs to properly fit KNN in seconds(or minutes).
-
-For Reinforcement Learning, we could use a similar approach. However, our input mapping actually doesn't provide any context. It's actually a feedback for a given game state, a response. So our context would be extracted from the game state, which is the captured frame.
-On this case, our vectorizer model won't be able to be a simple, shallow network. We won't be able to simply make a model with a single Pytorch Embedding layer, we need to extract features from the game frame and associate them with a given command.
-
-Also, this method might make Hakisa's Exploration mode useless, as this mode doesn't relate a game frame to a proper, "correct" command, it just tries to generate the "least worst option". Training our vectorizer based on this mode wouldn't be efficient at all.
-In NLP, if the vectorizer receives the sentence "School bright keyboard Europe", it'll make the mistake of relating "school" to "bright", which is nonsense. This would be the case if we train a vectorizer model on Hakisa's random input mappings.
-However, if we have a ready-made data, which could be the sentence "At school, we had computing class, but my computer keyboard was broken", our vectorizer would correctly relate the word "keyboard" to "computer", or "broken". It could relate "keyboard" to "school", but it'll also relate it to "computing" and "class".
-I presume this would be the case if we used a ready-made data where in the state A, the command is properly labeled as "Jump".
-
-For this reason, I'd recommend creating a dataset composed of game frames(which can be captured using the `mss` module. It doesn't lag your game, I promise!) and labeling each frame manually(if you can find a way to automatize this, I'd love to know it).
-You don't need to capture a single frame each second as Hakisa does, but it might be important to capture a number of frames related to the probability of you being subject to each situation. Example: in Jigoku Kisetsukan, if you want Hakisa to play on harder modes, it might not be a good idea to use frames which have no bullets on the screen(and it might also be good to use frames when you're in the game over screen,hehe).
-
-It might still be possible to use Hakisa's exploration mode to generate data for vectorization, but this would rely on using a memory_size <<<<<<< explore_steps, so it might take less time to simply create your own dataset.
-
-Study Mode will probably have to be modified: instead of simple Supervised Learning, we'll also train a Vector Embedding Layer for each action command. So we'll have `command_type` being one-hot encoded and then serving as input for this vector embedding layer, which will throw an output with the same size as the input, which will then be passed into a Cross Entropy having the input as target. The same thing will be applied to `action1` and `action2`.
-
-Those vector embedding layers will be used to create our input_mapping dictionary, which will now be used to convert Hakisa's outputs into input commands. KNN will then be properly fitted again.
-~~*In the exploration mode, Hakisa will simply choose a random integer which will serve as an index for the list of input mappings generated upon calling the `Dataset` class*~~
-
-Categorical Cross Entropy will be used to optimize the vector embedding layers, while Mean Squared Error will be used to optimize Hakisa's output(remember that Hakisa's output will be a vector, a single number).
 
 
 ### References
