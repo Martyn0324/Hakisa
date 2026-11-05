@@ -66,3 +66,6 @@
 04:45:01 [study] step 2700/3540 epoch 3 loss 3.5968
 04:45:32 [study] step 2750/3540 epoch 3 loss 3.6300
 04:46:00 [study] step 2800/3540 epoch 3 loss 3.5818
+04:46:43 [study] epoch 3 done: acc/bomb=1.000, acc/danger=0.983, acc/fire=1.000, acc/slow=0.894, acc2/pointer=0.664, err/pointer=3.228, f1/bomb=0.000, f1/fire=1.000, f1/slow=0.706, nll/total=3.579
+04:46:52 [study] step 2850/3540 epoch 4 loss 3.4627
+04:47:18 [study] step 2900/3540 epoch 4 loss 3.5465

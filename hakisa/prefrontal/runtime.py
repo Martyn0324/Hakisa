@@ -58,6 +58,8 @@ class AsyncPlanner:
                 try:
                     policy, obs, mm, hud = item
                     vis = s1_visual_tokens(policy, obs[:1], mm[:1] if mm is not None else None)
+                    with torch.no_grad():  # System 1's amygdala tells System 2 how dangerous it is
+                        hud.setdefault("danger_p", float(torch.sigmoid(policy(obs[:1], minimap=mm[:1] if mm is not None else None).danger)[0]))
                     instruction = hud.get("instruction") or self.instruction
                     text = hud.get("text") or self.state_text_fn(hud)
                     prompt = make_prompt(self.pf.title, text, instruction, self._previous)

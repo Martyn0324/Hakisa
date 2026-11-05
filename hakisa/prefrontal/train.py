@@ -57,6 +57,7 @@ def build_s2_samples(episodes, cfg: GameConfig, s1_policy, schema: IntentSchema,
         obs = torch.from_numpy(np.stack([it["obs"] for it in items])).to(device)
         mm = torch.from_numpy(np.stack([it["minimap"] for it in items])).to(device) if "minimap" in items[0] else None
         vis = s1_visual_tokens(s1_policy, obs, mm).cpu()
+        danger_p = s1_danger(s1_policy, obs, mm)
         for j, i in enumerate(idx):
             e, t = ds.index[i]
             ep = episodes[e]
@@ -67,12 +68,21 @@ def build_s2_samples(episodes, cfg: GameConfig, s1_policy, schema: IntentSchema,
                 rationale = lol_rationale(text, plan)
             else:
                 hud = bullet_hell_hud(ep, t)
+                hud.pop("clearance", None)  # privileged in the simulator: use System 1's own danger estimate
+                hud["danger_p"] = float(danger_p[j])
                 text = bullet_hell_state_text(hud)
                 rationale = bullet_hell_rationale(hud, plan)
             prompt = make_prompt(cfg.title, text, None, prev)
             comp = make_completion(schema.format_plan(plan), rationale, think)
             samples.append(S2Sample(vis[j], prompt, comp, intents[e][t]))
     return samples
+
+
+@torch.no_grad()
+def s1_danger(s1_policy, obs: torch.Tensor, minimap: torch.Tensor | None = None) -> np.ndarray:
+    """System 1's amygdala: P(life lost within the horizon) — the danger signal System 2 reads."""
+    out = s1_policy(obs, minimap=minimap)
+    return torch.sigmoid(out.danger).float().cpu().numpy()
 
 
 def _batches(n: int, size: int, rng: np.random.Generator):
@@ -140,13 +150,14 @@ def train_s2_sl(pf: Prefrontal, train: list[S2Sample], val: list[S2Sample] | Non
 # ---------------------------------------------------------------------------------------------
 
 
-def dojo_huds(info: dict[str, np.ndarray]) -> list[dict[str, Any]]:
+def dojo_huds(info: dict[str, np.ndarray], danger_p: np.ndarray) -> list[dict[str, Any]]:
+    """HUD facts System 2 may read: what probes give in real games + System 1's danger estimate."""
     out = []
     for i in range(len(info["lives"])):
-        x, y = info["player_xy"][i]
+        x, y = info["player_xy"][i]  # real games: a calibrated 'locate' probe on the ship sprite
         out.append({
             "lives": int(info["lives"][i]), "bombs": int(info["bombs"][i]), "score": int(info["score"][i]),
-            "boss_hp": float(info["boss_hp"][i]), "clearance": float(info["danger"][i]), "zone": zone_of(float(x), float(y)),
+            "boss_hp": float(info["boss_hp"][i]), "danger_p": float(danger_p[i]), "zone": zone_of(float(x), float(y)),
         })
     return out
 
@@ -154,8 +165,10 @@ def dojo_huds(info: dict[str, np.ndarray]) -> list[dict[str, Any]]:
 @torch.no_grad()
 def plan_for_envs(pf: Prefrontal, s1, obs: np.ndarray, info: dict, previous: list[str | None], device, temperature: float = 0.0,
                   max_new_tokens: int = 200) -> tuple[np.ndarray, list[str | None], int]:
-    vis = s1_visual_tokens(s1, torch.from_numpy(obs).to(device))
-    prompts = [make_prompt(pf.title, bullet_hell_state_text(h), None, previous[i]) for i, h in enumerate(dojo_huds(info))]
+    o = torch.from_numpy(obs).to(device)
+    vis = s1_visual_tokens(s1, o)
+    huds = dojo_huds(info, s1_danger(s1, o))
+    prompts = [make_prompt(pf.title, bullet_hell_state_text(h), None, previous[i]) for i, h in enumerate(huds)]
     results = pf.plan(vis, prompts, max_new_tokens=max_new_tokens, temperature=temperature)
     ids, prev, invalid = [], [], 0
     for text, plan in results:
@@ -222,8 +235,10 @@ def grpo_train(pf: Prefrontal, s1, schema: IntentSchema, make_driver: Callable[[
         t0 = time.time()
         pf.eval()
         with torch.no_grad():
-            vis = s1_visual_tokens(s1, torch.from_numpy(obs).to(device))
-            prompts = [make_prompt(pf.title, bullet_hell_state_text(h), None, previous[i]) for i, h in enumerate(dojo_huds(info))]
+            o = torch.from_numpy(obs).to(device)
+            vis = s1_visual_tokens(s1, o)
+            huds = dojo_huds(info, s1_danger(s1, o))
+            prompts = [make_prompt(pf.title, bullet_hell_state_text(h), None, previous[i]) for i, h in enumerate(huds)]
             rep_vis = vis.repeat_interleave(group, 0)
             rep_prompts = [p for p in prompts for _ in range(group)]
             texts = pf.generate(rep_vis, rep_prompts, max_new_tokens=200, temperature=temperature)
