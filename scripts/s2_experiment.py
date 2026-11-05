@@ -43,7 +43,7 @@ def main() -> None:
     ap.add_argument("--runs", default="runs/dojo_keyboard")
     ap.add_argument("--out", default="docs/results/system2")
     ap.add_argument("--difficulty", type=float, default=2.0)
-    ap.add_argument("--s1-epochs", type=int, default=1)
+    ap.add_argument("--s1-epochs", type=int, default=2)
     ap.add_argument("--s2-epochs", type=int, default=3)
     ap.add_argument("--stride", type=int, default=10)
     ap.add_argument("--grpo-steps", type=int, default=150)

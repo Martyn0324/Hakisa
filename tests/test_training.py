@@ -119,3 +119,16 @@ def test_dagger_records_expert_labels_on_learner_states(tmp_path):
     assert all(e.meta["source"] == "dagger" for e in eps)
     shoot = np.concatenate([e.labels()["shoot"] for e in eps])
     assert shoot.mean() > 0.99  # labels are the expert's (always shoots), not the learner's
+
+
+def test_ema_warmup_tracks_short_runs():
+    from hakisa.study import EMA
+
+    m = torch.nn.Linear(2, 2, bias=False)
+    torch.nn.init.zeros_(m.weight)
+    ema = EMA(m, decay=0.999)
+    with torch.no_grad():
+        m.weight.fill_(1.0)
+    for _ in range(500):
+        ema.update(m)
+    assert ema.module.weight.mean() > 0.9  # without warm-up it would be ~0.39 (1 - 0.999**500)

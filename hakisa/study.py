@@ -156,16 +156,25 @@ def evaluate_bc(policy: HakisaPolicy, ds: BCDataset, device: torch.device, batch
 
 
 class EMA:
+    """Exponential moving average of the weights with warm-up: decay_n = min(decay, (1+n)/(10+n)).
+
+    Without the warm-up a short fine-tune (e.g. 700 steps at decay 0.999) would still be ~50 % the
+    starting weights — measured as System 1 barely reacting to newly learned intents.
+    """
+
     def __init__(self, model: torch.nn.Module, decay: float):
         self.decay = decay
+        self.updates = 0
         self.module = copy.deepcopy(model).eval()
         for p in self.module.parameters():
             p.requires_grad_(False)
 
     @torch.no_grad()
     def update(self, model: torch.nn.Module) -> None:
+        self.updates += 1
+        d = min(self.decay, (1.0 + self.updates) / (10.0 + self.updates))
         for e, p in zip(self.module.parameters(), model.parameters()):
-            e.lerp_(p.detach(), 1.0 - self.decay)
+            e.lerp_(p.detach(), 1.0 - d)
         for e, b in zip(self.module.buffers(), model.buffers()):
             e.copy_(b)
 

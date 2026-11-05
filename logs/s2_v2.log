@@ -1,1 +1,19 @@
 06:52:27 hindsight intent counts: {'zone': [0, 0, 0, 0, 2, 33, 21, 33547, 36407, 29990], 'focus': [0, 77788, 22212], 'bomb': [0, 99160, 840]}
+06:52:56 [study] step 50/707 epoch 0 loss 2.0449
+06:53:24 [study] step 100/707 epoch 0 loss 1.9635
+06:53:52 [study] step 150/707 epoch 0 loss 1.9295
+06:54:19 [study] step 200/707 epoch 0 loss 1.8886
+06:54:48 [study] step 250/707 epoch 0 loss 1.8801
+06:55:14 [study] step 300/707 epoch 0 loss 1.8588
+06:55:41 [study] step 350/707 epoch 0 loss 1.8557
+06:56:08 [study] step 400/707 epoch 0 loss 1.8453
+06:56:35 [study] step 450/707 epoch 0 loss 1.8303
+06:56:59 [study] step 500/707 epoch 0 loss 1.8087
+06:57:24 [study] step 550/707 epoch 0 loss 1.8283
+06:57:50 [study] step 600/707 epoch 0 loss 1.8487
+06:58:15 [study] step 650/707 epoch 0 loss 1.8269
+06:58:40 [study] step 700/707 epoch 0 loss 1.8221
+06:58:59 [study] epoch 0 done: acc/bomb=0.999, acc/danger=0.987, acc/focus=0.847, acc/move=0.529, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.717, f1/shoot=1.000, nll/total=1.766
+06:59:13 System 1 intent following: {'null/p_bomb': 1.3940501124428314e-05, 'null/focus_rate': 0.046875, 'null/x': 0.4482305496931076, 'bomb_now/p_bomb': 3.40379225841995e-05, 'bomb_now/focus_rate': 0.04479166666666667, 'bomb_now/x': 0.4793053299188614, 'focus_on/p_bomb': 1.6873489039426202e-05, 'focus_on/focus_rate': 0.06458333333333334, 'focus_on/x': 0.4180168926715851, 'focus_off/p_bomb': 1.200607061188445e-05, 'focus_off/focus_rate': 0.052083333333333336, 'focus_off/x': 0.45978010892868043, 'zone_bottom_left/p_bomb': 1.8807028376007413e-05, 'zone_bottom_left/focus_rate': 0.06458333333333334, 'zone_bottom_left/x': 0.4238079428672791, 'zone_bottom_right/p_bomb': 1.825163731155044e-05, 'zone_bottom_right/focus_rate': 0.052083333333333336, 'zone_bottom_right/x': 0.47303860187530516}
+06:59:41 S1 alone (null intent): {'episodes': 32.0, 'episode_return': 0.5521093212882988, 'episode_return_se': 0.266242837971892, 'episode_length': 397.5, 'episode_length_se': 22.133529884798996, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 6802.34375, 'episode_score_se': 813.08967387419, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.34375, 'episode_bombs_se': 0.1063448343377457}
+07:00:08 System 2 samples: 8944 train / 360 val
