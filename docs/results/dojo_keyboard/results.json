@@ -3,7 +3,7 @@
     "game": "dojo_keyboard",
     "difficulty": 2.0,
     "demo_steps": 100000,
-    "bc_epochs": 5,
+    "bc_epochs": 6,
     "rl_steps": 700000,
     "eval_episodes": 32,
     "eval_seed": 777,
@@ -122,5 +122,43 @@
       "episode_bombs": 0.0,
       "episode_bombs_se": 0.0
     }
-  }
+  },
+  "dagger": [
+    {
+      "round": 0,
+      "train_frames": 126128,
+      "seconds": 483.0285551548004,
+      "play_sampled": {
+        "episodes": 32.0,
+        "episode_return": -0.3957969417970162,
+        "episode_return_se": 0.1802310109477254,
+        "episode_length": 323.46875,
+        "episode_length_se": 14.4205962959318,
+        "episode_deaths": 3.0,
+        "episode_deaths_se": 0.0,
+        "episode_score": 5945.15625,
+        "episode_score_se": 890.0443561225898,
+        "episode_clear": 0.0,
+        "episode_clear_se": 0.0,
+        "episode_bombs": 0.75,
+        "episode_bombs_se": 0.17960530202677488
+      },
+      "play_greedy": {
+        "episodes": 32.0,
+        "episode_return": -1.3633438036195002,
+        "episode_return_se": 0.0523782298160313,
+        "episode_length": 252.5,
+        "episode_length_se": 4.960732906309503,
+        "episode_deaths": 3.0,
+        "episode_deaths_se": 0.0,
+        "episode_score": 1116.5625,
+        "episode_score_se": 154.52881645805553,
+        "episode_clear": 0.0,
+        "episode_clear_se": 0.0,
+        "episode_bombs": 0.0,
+        "episode_bombs_se": 0.0
+      }
+    }
+  ],
+  "dagger_final": "runs/dojo_keyboard/dagger0/best.pt"
 }

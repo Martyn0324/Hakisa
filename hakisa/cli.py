@@ -73,7 +73,8 @@ def cmd_train_bc(args) -> None:
         if getattr(args, k) is not None:
             bc[k] = getattr(args, k)
     bc["num_workers"] = args.workers
-    aug = AugmentConfig(shift=args.shift, flip=bool(bc.get("flip", False)), color=0.1)
+    aug = AugmentConfig(shift=args.shift, flip=bool(bc.get("flip", False)), color=0.1,
+                        history_dropout=float(bc.get("history_dropout", 0.0)))
     train_ds = BCDataset(train_eps, cfg, augment=aug)
     val_ds = BCDataset(val_eps, cfg) if val_eps else None
     print(f"{len(eps)} episodes: {len(train_ds)} train frames, {len(val_ds) if val_ds else 0} validation frames")

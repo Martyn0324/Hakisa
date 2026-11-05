@@ -20,9 +20,9 @@ from typing import Any, Callable
 
 import torch
 import torch.nn.functional as F
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 
-from hakisa.hippocampus.dataset import BCDataset, compute_class_weights, worker_seed_init
+from hakisa.hippocampus.dataset import BCDataset, compute_class_weights, keyframe_weights, worker_seed_init
 from hakisa.models.games import save_policy
 from hakisa.models.policy import HakisaPolicy
 from hakisa.utils import JsonlLogger
@@ -43,6 +43,7 @@ class StudyConfig:
     num_workers: int = 0
     amp: bool = True
     intent_dropout: float = 0.3
+    keyframe_boost: float = 1.0  # >1 oversamples ticks where the action changes (anti-copycat)
     log_every: int = 50
     max_steps: int | None = None
     seed: int = 0
@@ -183,10 +184,16 @@ def train_bc(
     logger = JsonlLogger(out_dir / "study_log.jsonl")
     torch.manual_seed(cfg.seed)
     policy.to(device).train()
+    sampler = None
+    if cfg.keyframe_boost > 1.0:
+        weights = keyframe_weights(train_ds, cfg.keyframe_boost)
+        sampler = WeightedRandomSampler(torch.from_numpy(weights), num_samples=len(train_ds), replacement=True)
+        log_fn(f"[study] keyframes (action changes): {(weights > 1).mean():.1%} of ticks, boosted x{cfg.keyframe_boost:g}")
     loader = DataLoader(
         train_ds,
         batch_size=cfg.batch_size,
-        shuffle=True,
+        shuffle=sampler is None,
+        sampler=sampler,
         drop_last=len(train_ds) > cfg.batch_size,
         num_workers=cfg.num_workers,
         worker_init_fn=worker_seed_init,

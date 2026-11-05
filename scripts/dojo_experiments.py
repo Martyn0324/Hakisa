@@ -99,7 +99,8 @@ def main() -> None:
         eps = load_episodes([data])
         train_eps, val_eps = split_episodes(eps, 0.1, seed=0)
         bc_cfg = cfg.training.get("bc", {})
-        aug = AugmentConfig(shift=3, flip=bool(bc_cfg.get("flip", True)), color=0.1)
+        aug = AugmentConfig(shift=3, flip=bool(bc_cfg.get("flip", True)), color=0.1,
+                            history_dropout=float(bc_cfg.get("history_dropout", 0.0)))
         train_ds = BCDataset(train_eps, cfg, augment=aug)
         val_ds = BCDataset(val_eps, cfg)
         log(f"BC data: {len(train_ds)} train / {len(val_ds)} val frames from {len(eps)} episodes")
@@ -126,7 +127,7 @@ def main() -> None:
         current = runs / "bc" / "best.pt"
         dag_root = Path(str(data) + "_dagger")
         results["dagger"] = []
-        aug = AugmentConfig(shift=3, flip=True, color=0.1)
+        aug = AugmentConfig(shift=3, flip=True, color=0.1, history_dropout=float(cfg.training.get("bc", {}).get("history_dropout", 0.0)))
         for k in range(args.dagger_rounds):
             learner = load_policy(current).to_channels_last().eval()
 

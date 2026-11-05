@@ -1,0 +1,127 @@
+{
+  "setup": {
+    "game": "dojo_mouse",
+    "difficulty": 2.0,
+    "demo_steps": 100000,
+    "bc_epochs": 5,
+    "rl_steps": 700000,
+    "eval_episodes": 32,
+    "eval_seed": 777,
+    "device": "cpu",
+    "threads": 2
+  },
+  "demos": {
+    "episodes": 65,
+    "frames": 100000,
+    "seconds": 103.86584997177124
+  },
+  "baselines": {
+    "random": {
+      "episodes": 32.0,
+      "episode_return": -1.1312812907854095,
+      "episode_return_se": 0.146572089561088,
+      "episode_length": 265.09375,
+      "episode_length_se": 10.492351224763222,
+      "episode_deaths": 3.0,
+      "episode_deaths_se": 0.0,
+      "episode_score": 5834.0625,
+      "episode_score_se": 915.3376513631591,
+      "episode_clear": 0.0,
+      "episode_clear_se": 0.0,
+      "episode_bombs": 1.21875,
+      "episode_bombs_se": 0.18908936592640951
+    },
+    "demonstrator": {
+      "episodes": 32.0,
+      "episode_return": 18.850609153334517,
+      "episode_return_se": 0.36650311602009894,
+      "episode_length": 1776.46875,
+      "episode_length_se": 15.143133249992093,
+      "episode_deaths": 0.6875,
+      "episode_deaths_se": 0.17061026611322602,
+      "episode_score": 19547.03125,
+      "episode_score_se": 871.2512975928402,
+      "episode_clear": 0.03125,
+      "episode_clear_se": 0.03125,
+      "episode_bombs": 0.5,
+      "episode_bombs_se": 0.1270001270001905
+    }
+  },
+  "bc": {
+    "train_seconds": 2185.3299276828766,
+    "params": 193444,
+    "val": {
+      "nll/fire": 0.030611016375223794,
+      "acc/fire": 1.0,
+      "nll/bomb": 0.03150676472345988,
+      "acc/bomb": 0.99968,
+      "nll/slow": 0.2945681880823771,
+      "acc/slow": 0.89472,
+      "nll/pointer": 2.9530373404947916,
+      "err/pointer": 3.1528730741373696,
+      "acc2/pointer": 0.6789333333333334,
+      "acc/danger": 0.9829333333333333,
+      "f1/fire": 1.0,
+      "f1/bomb": 0.0,
+      "f1/slow": 0.7031578947368421,
+      "nll/total": 3.3097233096758525
+    },
+    "epochs": [
+      {
+        "epoch": 0,
+        "elapsed_s": 489.16103506088257,
+        "val/nll/total": 10.475329362996419
+      },
+      {
+        "epoch": 1,
+        "elapsed_s": 947.7874863147736,
+        "val/nll/total": 7.401210254389445
+      },
+      {
+        "epoch": 2,
+        "elapsed_s": 1363.8769085407257,
+        "val/nll/total": 5.308900560913086
+      },
+      {
+        "epoch": 3,
+        "elapsed_s": 1797.4998829364777,
+        "val/nll/total": 3.578708545366923
+      },
+      {
+        "epoch": 4,
+        "elapsed_s": 2184.3088521957397,
+        "val/nll/total": 3.3097233096758525
+      }
+    ],
+    "play_sampled": {
+      "episodes": 32.0,
+      "episode_return": 2.6181561428238638,
+      "episode_return_se": 0.2540465401986721,
+      "episode_length": 580.71875,
+      "episode_length_se": 20.41273886606383,
+      "episode_deaths": 3.0,
+      "episode_deaths_se": 0.0,
+      "episode_score": 23297.1875,
+      "episode_score_se": 1204.9367524874322,
+      "episode_clear": 0.0,
+      "episode_clear_se": 0.0,
+      "episode_bombs": 5.0625,
+      "episode_bombs_se": 0.2150464128448074
+    },
+    "play_greedy": {
+      "episodes": 32.0,
+      "episode_return": -1.379875056387391,
+      "episode_return_se": 0.05648309562095976,
+      "episode_length": 250.0625,
+      "episode_length_se": 5.083365007392946,
+      "episode_deaths": 3.0,
+      "episode_deaths_se": 0.0,
+      "episode_score": 1195.0,
+      "episode_score_se": 159.54509424226802,
+      "episode_clear": 0.0,
+      "episode_clear_se": 0.0,
+      "episode_bombs": 0.0,
+      "episode_bombs_se": 0.0
+    }
+  }
+}

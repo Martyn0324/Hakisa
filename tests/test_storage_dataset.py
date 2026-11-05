@@ -111,3 +111,18 @@ def test_flip_and_shift_augmentation_keeps_pointer_consistent(tmp_path):
         # ... and the label must still point at it after flip/shift
         assert item["obs"][0, y, x] == 255
         assert item["obs"].shape == (4, 16, 16)  # 3 RGB + cursor channel
+
+
+def test_history_dropout_and_keyframe_weights(tmp_path):
+    from hakisa.hippocampus.dataset import keyframe_weights
+
+    cfg = load_game_config("jigoku", overrides=["obs.height=8", "obs.width=6", "obs.stack=3", "actions.lookahead_ms=0"])
+    path = _write_human_episode(tmp_path, cfg)  # move label switches from none to right at tick 5
+    ep = Episode(path)
+    np.savez(ep.path / "labels.npz", **compute_labels(ep, cfg.action_space))
+    ep = Episode(path)
+    ds = BCDataset([ep], cfg, augment=AugmentConfig(shift=0, flip=False, color=0.0, history_dropout=1.0))
+    item = ds.item_numpy(4, np.random.default_rng(0))  # frames (2, 3, 4) -> all replaced by the newest (4)
+    assert item["obs"][:, 0, 0].tolist() == [4] * 9
+    w = keyframe_weights(BCDataset([ep], cfg), boost=3.0)
+    assert w.tolist() == [1, 1, 1, 1, 1, 3, 1, 1, 1, 1]  # only the tick where "right" starts

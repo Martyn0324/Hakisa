@@ -35,6 +35,9 @@ class AugmentConfig:
     shift: int = 4  # max translation in pixels (pointer labels are shifted consistently)
     flip: bool = False  # horizontal mirror with left/right label swap
     color: float = 0.1  # brightness jitter amplitude
+    # "copycat" counter-measure: with this probability the older stacked frames are replaced by the newest
+    # one, so the model cannot always infer (and copy) its previous action from the ship's motion
+    history_dropout: float = 0.0
 
 
 def _episode_cursor_norm(ep: Episode) -> np.ndarray:
@@ -141,6 +144,11 @@ class BCDataset(Dataset):
         assert aug is not None
         obs = item["obs"]
         labels = dict(item["labels"])
+        if aug.history_dropout > 0 and self.stack > 1 and rng.random() < aug.history_dropout:
+            obs = obs.copy()
+            newest = obs[3 * (self.stack - 1) : 3 * self.stack]
+            for k in range(self.stack - 1):
+                obs[3 * k : 3 * k + 3] = newest
         if aug.flip and rng.random() < 0.5:
             obs = obs[:, :, ::-1]
             for h in self.space.categorical_heads:
@@ -195,6 +203,28 @@ class BCDataset(Dataset):
             if v >= 0:
                 counts[v] += 1
         return counts
+
+
+def keyframe_weights(dataset: BCDataset, boost: float, pointer_cells: int = 2) -> np.ndarray:
+    """Sampling weight per item: ``boost`` where the action changes w.r.t. the previous tick, else 1.
+
+    Keyframe-focused imitation (Wen et al., ICML 2021): human/demonstrator actions are strongly
+    autocorrelated (keys are held), so the informative moments are the *changes* — oversample them.
+    """
+    space = dataset.space
+    w = np.ones(len(dataset), dtype=np.float64)
+    for i, (e, t) in enumerate(dataset.index):
+        if t == 0:
+            continue
+        lab = dataset.labels[e]
+        changed = any(lab[h.name][t] != lab[h.name][t - 1] for h in space.categorical_heads if h.mode == "hold")
+        for p in space.pointer_heads:
+            x0, y0, x1, y1 = lab[f"{p.name}_x"][t - 1], lab[f"{p.name}_y"][t - 1], lab[f"{p.name}_x"][t], lab[f"{p.name}_y"][t]
+            if min(x0, y0, x1, y1) >= 0 and abs(int(x1) - int(x0)) + abs(int(y1) - int(y0)) > pointer_cells:
+                changed = True
+        if changed:
+            w[i] = boost
+    return w
 
 
 def compute_class_weights(
