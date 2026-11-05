@@ -191,3 +191,17 @@
   https://docs.rs/crate/lol-game-client-api/latest/source/src/model.rs
 - Riot third-party applications stance: https://support-leagueoflegends.riotgames.com/hc/en-us/articles/225266848
 - DXcam: https://github.com/ra1nty/DXcam
+
+## 8. Experiment notes (added during implementation)
+
+Two pitfalls surfaced by the first DanmakuDojo run, both relevant to the real games:
+
+1. **Label smoothing on rare edge-triggered commands is harmful.** With smoothing 0.05 the bomb head learned
+   a ~2.5 % bomb probability *at every tick* — at 20 Hz a bomb every ~2 s; the BC agent used all of its bombs
+   (5.4 per episode vs. 1.7 for the demonstrator). Fix: smoothing only on "hold" heads, never on "tap" heads.
+   For the same reason inverse-frequency class weights are off by default (they miscalibrate sampling).
+2. **Behaviour cloning alone suffers compounding errors.** Validation accuracy was reasonable (move 58 %,
+   pointer within 2 cells 68 %), but the clone survived only ~30 s vs. ~89 s for the demonstrator: the
+   demonstrations never show recovery from the clone's own mistakes. Fix: a **"play & teach" stage** —
+   DAgger in the simulator (the expert labels the states the learner visits) and, on real games, the F8
+   human takeover (HG-DAgger), before RL consolidation.

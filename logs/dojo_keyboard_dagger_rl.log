@@ -1,0 +1,14 @@
+04:51:02 [dagger] 8000/40000 frames
+04:51:14 [dagger] 16000/40000 frames
+04:51:25 [dagger] 24000/40000 frames
+04:51:37 [dagger] 32000/40000 frames
+04:51:50 [dagger] 40000/40000 frames
+04:51:51 DAgger round 0: 126128 train frames
+04:52:13 [study] step 50/985 epoch 0 loss 2.0853
+04:52:32 [study] step 100/985 epoch 0 loss 2.0766
+04:52:52 [study] step 150/985 epoch 0 loss 2.0553
+04:53:12 [study] step 200/985 epoch 0 loss 2.0307
+04:53:33 [study] step 250/985 epoch 0 loss 2.0229
+04:53:53 [study] step 300/985 epoch 0 loss 2.0347
+04:54:13 [study] step 350/985 epoch 0 loss 2.0319
+04:54:33 [study] step 400/985 epoch 0 loss 2.0145

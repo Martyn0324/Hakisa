@@ -46,5 +46,82 @@
       "episode_bombs": 0.5,
       "episode_bombs_se": 0.1270001270001905
     }
+  },
+  "bc": {
+    "train_seconds": 2185.3299276828766,
+    "params": 193444,
+    "val": {
+      "nll/fire": 0.030611016375223794,
+      "acc/fire": 1.0,
+      "nll/bomb": 0.03150676472345988,
+      "acc/bomb": 0.99968,
+      "nll/slow": 0.2945681880823771,
+      "acc/slow": 0.89472,
+      "nll/pointer": 2.9530373404947916,
+      "err/pointer": 3.1528730741373696,
+      "acc2/pointer": 0.6789333333333334,
+      "acc/danger": 0.9829333333333333,
+      "f1/fire": 1.0,
+      "f1/bomb": 0.0,
+      "f1/slow": 0.7031578947368421,
+      "nll/total": 3.3097233096758525
+    },
+    "epochs": [
+      {
+        "epoch": 0,
+        "elapsed_s": 489.16103506088257,
+        "val/nll/total": 10.475329362996419
+      },
+      {
+        "epoch": 1,
+        "elapsed_s": 947.7874863147736,
+        "val/nll/total": 7.401210254389445
+      },
+      {
+        "epoch": 2,
+        "elapsed_s": 1363.8769085407257,
+        "val/nll/total": 5.308900560913086
+      },
+      {
+        "epoch": 3,
+        "elapsed_s": 1797.4998829364777,
+        "val/nll/total": 3.578708545366923
+      },
+      {
+        "epoch": 4,
+        "elapsed_s": 2184.3088521957397,
+        "val/nll/total": 3.3097233096758525
+      }
+    ],
+    "play_sampled": {
+      "episodes": 32.0,
+      "episode_return": 2.6181561428238638,
+      "episode_return_se": 0.2540465401986721,
+      "episode_length": 580.71875,
+      "episode_length_se": 20.41273886606383,
+      "episode_deaths": 3.0,
+      "episode_deaths_se": 0.0,
+      "episode_score": 23297.1875,
+      "episode_score_se": 1204.9367524874322,
+      "episode_clear": 0.0,
+      "episode_clear_se": 0.0,
+      "episode_bombs": 5.0625,
+      "episode_bombs_se": 0.2150464128448074
+    },
+    "play_greedy": {
+      "episodes": 32.0,
+      "episode_return": -1.379875056387391,
+      "episode_return_se": 0.05648309562095976,
+      "episode_length": 250.0625,
+      "episode_length_se": 5.083365007392946,
+      "episode_deaths": 3.0,
+      "episode_deaths_se": 0.0,
+      "episode_score": 1195.0,
+      "episode_score_se": 159.54509424226802,
+      "episode_clear": 0.0,
+      "episode_clear_se": 0.0,
+      "episode_bombs": 0.0,
+      "episode_bombs_se": 0.0
+    }
   }
 }

@@ -77,3 +77,10 @@
 04:50:04 [study] step 3200/3540 epoch 4 loss 3.5775
 04:50:30 [study] step 3250/3540 epoch 4 loss 3.5788
 04:50:56 [study] step 3300/3540 epoch 4 loss 3.5917
+04:51:21 [study] step 3350/3540 epoch 4 loss 3.5667
+04:51:46 [study] step 3400/3540 epoch 4 loss 3.5671
+04:52:11 [study] step 3450/3540 epoch 4 loss 3.5641
+04:52:36 [study] step 3500/3540 epoch 4 loss 3.5253
+04:53:09 [study] epoch 4 done: acc/bomb=1.000, acc/danger=0.983, acc/fire=1.000, acc/slow=0.895, acc2/pointer=0.679, err/pointer=3.153, f1/bomb=0.000, f1/fire=1.000, f1/slow=0.703, nll/total=3.310
+04:53:55 BC (sampled): {'episodes': 32.0, 'episode_return': 2.6181561428238638, 'episode_return_se': 0.2540465401986721, 'episode_length': 580.71875, 'episode_length_se': 20.41273886606383, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 23297.1875, 'episode_score_se': 1204.9367524874322, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 5.0625, 'episode_bombs_se': 0.2150464128448074}
+04:54:08 BC (greedy): {'episodes': 32.0, 'episode_return': -1.379875056387391, 'episode_return_se': 0.05648309562095976, 'episode_length': 250.0625, 'episode_length_se': 5.083365007392946, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 1195.0, 'episode_score_se': 159.54509424226802, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.0, 'episode_bombs_se': 0.0}
