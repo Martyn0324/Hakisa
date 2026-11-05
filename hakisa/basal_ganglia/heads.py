@@ -219,7 +219,9 @@ class ActionDistribution:
                 labels[h.name],
                 weight=w.to(self.out.logits[h.name].device) if w is not None else None,
                 ignore_index=-1,
-                label_smoothing=label_smoothing,
+                # never smooth rare edge-triggered commands: a smoothed bomb head learns a ~eps/2 bomb
+                # probability *every tick*, i.e. a bomb every couple of seconds at 20 Hz
+                label_smoothing=label_smoothing if h.mode == "hold" else 0.0,
             )
         for p in self.space.pointer_heads:
             fx, fy = labels[f"{p.name}_x"], labels[f"{p.name}_y"]

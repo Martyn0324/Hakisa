@@ -19,7 +19,7 @@ import torch
 
 from hakisa.config import load_game_config
 from hakisa.consolidation import PPOConfig, PPOTrainer, evaluate_policy
-from hakisa.dojo_tools import dojo_env_factory, record_dojo_demos
+from hakisa.dojo_tools import dojo_env_factory, record_dojo_dagger, record_dojo_demos
 from hakisa.envs.dojo import DanmakuDojo
 from hakisa.envs.dojo_expert import ScriptedExpert
 from hakisa.hippocampus.dataset import AugmentConfig, BCDataset, split_episodes
@@ -54,6 +54,9 @@ def main() -> None:
     ap.add_argument("--bc-epochs", type=int, default=6)
     ap.add_argument("--bc-batch", type=int, default=128)
     ap.add_argument("--rl-steps", type=int, default=1_000_000)
+    ap.add_argument("--dagger-rounds", type=int, default=2)
+    ap.add_argument("--dagger-steps", type=int, default=40_000)
+    ap.add_argument("--dagger-epochs", type=int, default=1)
     ap.add_argument("--eval-episodes", type=int, default=32)
     ap.add_argument("--eval-seed", type=int, default=777)
     ap.add_argument("--threads", type=int, default=4)
@@ -80,7 +83,7 @@ def main() -> None:
     def save():
         results_path.write_text(json.dumps(results, indent=2, default=float))
 
-    stages = ["demos", "baselines", "bc", "rl"] if args.stage == "all" else [args.stage]
+    stages = ["demos", "baselines", "bc", "dagger", "rl"] if args.stage == "all" else args.stage.split(",")
 
     if "demos" in stages:
         t0 = time.time()
@@ -117,10 +120,49 @@ def main() -> None:
         log(f"BC (greedy): {results['bc']['play_greedy']}")
         save()
 
+    if "dagger" in stages:
+        # "Play & teach": the learner plays, the expert labels the states the learner actually visits
+        # (on real games: your F8 takeover corrections, HG-DAgger)
+        current = runs / "bc" / "best.pt"
+        dag_root = Path(str(data) + "_dagger")
+        results["dagger"] = []
+        aug = AugmentConfig(shift=3, flip=True, color=0.1)
+        for k in range(args.dagger_rounds):
+            learner = load_policy(current).to_channels_last().eval()
+
+            def act_fn(obs, learner=learner):
+                with torch.no_grad():
+                    a, *_ = learner.act(torch.from_numpy(obs))
+                return {key: v.numpy() for key, v in a.items()}
+
+            t0 = time.time()
+            record_dojo_dagger(dag_root / f"round{k}", args.scheme, act_fn, args.dagger_steps, difficulty=args.difficulty,
+                               seed=1000 + 17 * k, log_fn=log)
+            eps = load_episodes([data] + [dag_root / f"round{j}" for j in range(k + 1)])
+            train_eps, val_eps = split_episodes(eps, 0.1, seed=0)
+            train_ds = BCDataset(train_eps, cfg, augment=aug)
+            val_ds = BCDataset(val_eps, cfg)
+            log(f"DAgger round {k}: {len(train_ds)} train frames")
+            scfg = StudyConfig.from_dict(dict(cfg.training.get("bc", {}), epochs=args.dagger_epochs, batch_size=args.bc_batch,
+                                              lr=5e-4, warmup_frac=0.02, num_workers=0, amp=False))
+            pol = load_policy(current).to_channels_last()
+            train_bc(pol, train_ds, val_ds, scfg, runs / f"dagger{k}", device, log_fn=log)
+            current = runs / f"dagger{k}" / "best.pt"
+            best = load_policy(current).to_channels_last()
+            rec = {"round": k, "train_frames": len(train_ds), "seconds": time.time() - t0,
+                   "play_sampled": evaluate_policy(best, make, args.eval_episodes, seed=args.eval_seed),
+                   "play_greedy": evaluate_policy(best, make, args.eval_episodes, deterministic=True, seed=args.eval_seed)}
+            log(f"DAgger round {k} (sampled): {rec['play_sampled']}")
+            results["dagger"].append(rec)
+            results["dagger_final"] = str(current)
+            save()
+
     if "rl" in stages:
-        bc_policy = load_policy(runs / "bc" / "best.pt").to_channels_last()
-        ref = load_policy(runs / "bc" / "best.pt").to_channels_last()
-        eps = load_episodes([data])
+        init = Path(results.get("dagger_final") or (runs / "bc" / "best.pt"))
+        log(f"RL starts from {init}")
+        bc_policy = load_policy(init).to_channels_last()
+        ref = load_policy(init).to_channels_last()
+        eps = load_episodes([data] + sorted(Path(str(data) + "_dagger").glob("round*")))
         demo_ds = BCDataset(eps, cfg, augment=AugmentConfig(shift=3, flip=True, color=0.1))
         pcfg = PPOConfig.from_dict(cfg.training.get("rl", {}))
         env = DanmakuDojo(num_envs=pcfg.num_envs, scheme=args.scheme, difficulty=args.difficulty, seed=1)
@@ -163,6 +205,9 @@ def write_report(results: dict, out: Path) -> None:
     row("Demonstrator (scripted 'human')", b.get("demonstrator"))
     row("Study / BC (sampled)", results.get("bc", {}).get("play_sampled"))
     row("Study / BC (greedy)", results.get("bc", {}).get("play_greedy"))
+    for d in results.get("dagger", []):
+        row(f"+ Play & teach (DAgger round {d['round'] + 1}, sampled)", d.get("play_sampled"))
+        row(f"+ Play & teach (DAgger round {d['round'] + 1}, greedy)", d.get("play_greedy"))
     row("BC + Consolidation / RL (sampled)", results.get("rl", {}).get("play_sampled"))
     row("BC + Consolidation / RL (greedy)", results.get("rl", {}).get("play_greedy"))
     s = results.get("setup", {})

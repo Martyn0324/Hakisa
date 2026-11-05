@@ -63,7 +63,7 @@ class AsyncPlanner:
                     instruction = hud.get("instruction") or self.instruction
                     text = hud.get("text") or self.state_text_fn(hud)
                     prompt = make_prompt(self.pf.title, text, instruction, self._previous)
-                    out, plan = self.pf.plan(vis.to(self.pf.device), [prompt], max_new_tokens=96 if self.think else 24)[0]
+                    out, plan = self.pf.plan(vis.to(self.pf.device), [prompt], max_new_tokens=160 if self.think else 32)[0]
                     if plan is not None:
                         ids = torch.from_numpy(self.schema.encode(plan))[None]
                         with self._lock:

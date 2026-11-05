@@ -100,3 +100,23 @@ def test_evaluate_policy_runs_full_episodes():
     policy = build_policy(cfg)
     res = evaluate_policy(policy, lambda s: DanmakuDojo(num_envs=4, scheme="keyboard", seed=s, max_steps=60), episodes=4, seed=3)
     assert res["episodes"] == 4 and res["episode_length"] <= 60
+
+
+def test_dagger_records_expert_labels_on_learner_states(tmp_path):
+    from hakisa.dojo_tools import record_dojo_dagger
+    from hakisa.hippocampus.storage import load_episodes
+
+    calls = {"n": 0}
+
+    def learner(obs):  # always "stand still, no shooting": very different from the expert
+        calls["n"] += 1
+        n = obs.shape[0]
+        return {"move": np.zeros(n, np.int64), "focus": np.zeros(n, np.int64), "shoot": np.zeros(n, np.int64),
+                "bomb": np.zeros(n, np.int64)}
+
+    record_dojo_dagger(tmp_path, "keyboard", learner, total_steps=256, num_envs=4, beta=0.0, log_fn=lambda m: None)
+    eps = load_episodes([tmp_path])
+    assert calls["n"] == 64 and sum(e.length for e in eps) == 256
+    assert all(e.meta["source"] == "dagger" for e in eps)
+    shoot = np.concatenate([e.labels()["shoot"] for e in eps])
+    assert shoot.mean() > 0.99  # labels are the expert's (always shoots), not the learner's
