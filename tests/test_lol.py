@@ -184,3 +184,29 @@ def test_lol_env_end_to_end():
     finally:
         poller.stop()
         srv.close()
+
+
+def test_stats_vector_roundtrip_and_s2_samples(tmp_path):
+    from hakisa.hippocampus.storage import EpisodeWriter, load_episodes
+    from hakisa.limbic.lol_client import stats_from_vector
+    from hakisa.prefrontal.intents import IntentSchema
+    from hakisa.prefrontal.train import build_s2_samples
+
+    s = parse_allgamedata(payload(gold=1234.0, cs=42, kills=3))
+    back = stats_from_vector(s.vector())
+    assert abs(back["gold"] - 1234.0) < 0.01 and abs(back["cs"] - 42) < 1e-3 and abs(back["kills"] - 3) < 1e-4
+    assert "cs 42" in back.text()  # float32 round-trip must not display 41
+    cfg = load_game_config("lol")
+    space = cfg.action_space
+    w = EpisodeWriter(tmp_path, {"game": "lol", "obs_region": [0, 0, 256, 144], "minimap_region": [0, 0, 64, 64]})
+    for t in range(12):
+        step = {f"label/{k}": (space.head("action_type").index("recall") if (k == "action_type" and t == 5) else 0)
+                for k in space.label_keys()}
+        step["label/minimap_pointer_x"] = step["label/minimap_pointer_y"] = -1
+        step["aux"] = s.vector()
+        w.add(np.zeros((144, 256, 3), np.uint8), step, minimap=np.zeros((64, 64, 3), np.uint8))
+    w.close()
+    eps = load_episodes([tmp_path])
+    samples = build_s2_samples(eps, cfg, build_policy(cfg), IntentSchema.from_config(cfg), stride=4)
+    assert len(samples) == 3 and samples[0].vis.shape[0] == 18  # 16 + global + minimap token
+    assert "KDA 3/" in samples[0].prompt[1] and "objective=recall" in samples[0].completion

@@ -60,15 +60,20 @@ class LoLStats:
         return np.array([self.values.get(k, 0.0) / _SCALE[k] for k in LOL_FEATURES], dtype=np.float32)
 
     def text(self) -> str:
-        v = self.values
-        hp = int(round(100 * v.get("hp_frac", 0)))
+        v = {k: int(round(x)) for k, x in self.values.items() if k != "hp_frac"}
+        hp = int(round(100 * self.values.get("hp_frac", 0)))
+        gt = v.get("game_time", 0)
         return (
-            f"time {int(v.get('game_time', 0)) // 60}:{int(v.get('game_time', 0)) % 60:02d}, level {int(v.get('level', 0))}, "
-            f"hp {hp}%, gold {int(v.get('gold', 0))}, KDA {int(v.get('kills', 0))}/{int(v.get('deaths', 0))}/"
-            f"{int(v.get('assists', 0))}, cs {int(v.get('cs', 0))}, team kills {int(v.get('team_kills', 0))}-"
-            f"{int(v.get('enemy_kills', 0))}, turrets {int(v.get('turrets_taken', 0))}-{int(v.get('turrets_lost', 0))}"
-            + (", DEAD" if v.get("is_dead") else "")
+            f"time {gt // 60}:{gt % 60:02d}, level {v.get('level', 0)}, hp {hp}%, gold {v.get('gold', 0)}, "
+            f"KDA {v.get('kills', 0)}/{v.get('deaths', 0)}/{v.get('assists', 0)}, cs {v.get('cs', 0)}, "
+            f"team kills {v.get('team_kills', 0)}-{v.get('enemy_kills', 0)}, "
+            f"turrets {v.get('turrets_taken', 0)}-{v.get('turrets_lost', 0)}" + (", DEAD" if v.get("is_dead") else "")
         )
+
+
+def stats_from_vector(vec) -> LoLStats:
+    """Inverse of ``LoLStats.vector()`` (used to rebuild System 2's state text from recordings)."""
+    return LoLStats(values={k: float(vec[i]) * _SCALE[k] for i, k in enumerate(LOL_FEATURES)})
 
 
 def _player_names(p: dict[str, Any]) -> set[str]:

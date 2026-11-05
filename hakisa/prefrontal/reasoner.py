@@ -60,7 +60,10 @@ def s1_visual_tokens(policy, obs: torch.Tensor, minimap: torch.Tensor | None = N
     enc = policy.encoder(obs)
     toks = [enc.pooled[:, None], F.adaptive_avg_pool2d(enc.fmap, grid).flatten(2).transpose(1, 2)]
     if getattr(policy, "minimap_encoder", None) is not None and minimap is not None:
-        toks.append(policy.minimap_encoder(minimap).pooled[:, None])
+        mm = policy.minimap_encoder(minimap).pooled[:, None]
+        c = enc.pooled.shape[-1]
+        mm = F.pad(mm, (0, c - mm.shape[-1])) if mm.shape[-1] < c else mm[..., :c]  # same width as the main tokens
+        toks.append(mm)
     return torch.cat(toks, dim=1).float()
 
 

@@ -28,8 +28,10 @@ from hakisa.prefrontal.intents import (
     bullet_hell_rationale,
     bullet_hell_state_text,
     hindsight_for_episode,
+    lol_rationale,
     zone_of,
 )
+from hakisa.limbic.lol_client import stats_from_vector
 from hakisa.prefrontal.reasoner import Prefrontal, make_completion, make_prompt, s1_visual_tokens
 
 
@@ -58,11 +60,17 @@ def build_s2_samples(episodes, cfg: GameConfig, s1_policy, schema: IntentSchema,
         for j, i in enumerate(idx):
             e, t = ds.index[i]
             ep = episodes[e]
-            hud = bullet_hell_hud(ep, t)
             plan = schema.decode(intents[e][t])
             prev = schema.format_plan(schema.decode(intents[e][t - stride])) if t >= stride else None
-            prompt = make_prompt(cfg.title, bullet_hell_state_text(hud), None, prev)
-            comp = make_completion(schema.format_plan(plan), bullet_hell_rationale(hud, plan), think)
+            if cfg.name == "lol":
+                text = stats_from_vector(ep.array("aux")[t]).text() if ep.has("aux") else "no live data"
+                rationale = lol_rationale(text, plan)
+            else:
+                hud = bullet_hell_hud(ep, t)
+                text = bullet_hell_state_text(hud)
+                rationale = bullet_hell_rationale(hud, plan)
+            prompt = make_prompt(cfg.title, text, None, prev)
+            comp = make_completion(schema.format_plan(plan), rationale, think)
             samples.append(S2Sample(vis[j], prompt, comp, intents[e][t]))
     return samples
 

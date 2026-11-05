@@ -101,6 +101,7 @@ def _realtime_env(cfg, log_fn=print):  # pragma: no cover - needs a game
         from hakisa.envs.lol_env import LoLEnv
 
         env = LoLEnv(cfg, source, controller, region, safety=safety, log_fn=log_fn)
+        env.attach_instructions(tracker)  # F1-F6: duo-partner instructions for System 2
     else:
         base = cfg.source_path.parent if cfg.source_path else None
         probes = build_probes(cfg.probes, base)
