@@ -58,7 +58,7 @@ intents:
   horizon_s: 1.5
   slots:
     zone: [any, top_left, top, top_right, left, center, right, bottom_left, bottom, bottom_right]
-    focus: [any, off, on]         # "focus" = the slow (Shift) mode
+    focus: [any, "off", "on"]       # "focus" = the slow (Shift) mode
     bomb: [any, hold, now]
 
 record:

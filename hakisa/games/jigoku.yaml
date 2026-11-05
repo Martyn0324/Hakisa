@@ -71,7 +71,7 @@ intents:                          # System 2 (prefrontal) plan slots
   horizon_s: 1.5
   slots:
     zone: [any, top_left, top, top_right, left, center, right, bottom_left, bottom, bottom_right]
-    focus: [any, off, on]
+    focus: [any, "off", "on"]
     bomb: [any, hold, now]
 
 record:

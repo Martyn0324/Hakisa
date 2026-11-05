@@ -37,3 +37,20 @@
 04:31:42 [study] step 1350/3540 epoch 1 loss 3.8559
 04:32:09 [study] step 1400/3540 epoch 1 loss 3.8600
 04:32:33 [study] epoch 1 done: acc/bomb=1.000, acc/danger=0.983, acc/fire=1.000, acc/slow=0.180, acc2/pointer=0.471, err/pointer=3.973, f1/bomb=0.000, f1/fire=1.000, f1/slow=0.305, nll/total=7.401
+04:33:12 [study] step 1450/3540 epoch 2 loss 3.7616
+04:33:37 [study] step 1500/3540 epoch 2 loss 3.7697
+04:34:02 [study] step 1550/3540 epoch 2 loss 3.8207
+04:34:29 [study] step 1600/3540 epoch 2 loss 3.8112
+04:34:54 [study] step 1650/3540 epoch 2 loss 3.8019
+04:35:19 [study] step 1700/3540 epoch 2 loss 3.7837
+04:35:44 [study] step 1750/3540 epoch 2 loss 3.7711
+04:36:09 [study] step 1800/3540 epoch 2 loss 3.7377
+04:36:34 [study] step 1850/3540 epoch 2 loss 3.7109
+04:36:59 [study] step 1900/3540 epoch 2 loss 3.7288
+04:37:25 [study] step 1950/3540 epoch 2 loss 3.7096
+04:37:50 [study] step 2000/3540 epoch 2 loss 3.6833
+04:38:16 [study] step 2050/3540 epoch 2 loss 3.6833
+04:38:43 [study] step 2100/3540 epoch 2 loss 3.6750
+04:39:29 [study] epoch 2 done: acc/bomb=1.000, acc/danger=0.983, acc/fire=1.000, acc/slow=0.287, acc2/pointer=0.593, err/pointer=3.458, f1/bomb=0.000, f1/fire=1.000, f1/slow=0.333, nll/total=5.309
+04:39:43 [study] step 2150/3540 epoch 3 loss 3.5806
+04:40:08 [study] step 2200/3540 epoch 3 loss 3.6453
