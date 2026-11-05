@@ -1,7 +1,6 @@
 import numpy as np
 import torch
 
-from hakisa.actions import ActionSpace, Choice, HeadSpec
 from hakisa.config import load_game_config
 from hakisa.consolidation import PPOConfig, PPOTrainer, compute_gae, evaluate_policy
 from hakisa.dojo_tools import record_dojo_demos

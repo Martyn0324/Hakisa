@@ -15,6 +15,7 @@ Regions are ``[x, y, w, h]`` in pixels of the captured image.
 
 from __future__ import annotations
 
+import importlib
 from collections import deque
 from pathlib import Path
 from typing import Any, Callable
@@ -217,7 +218,7 @@ def load_digit_templates(spec: str, base_dir: Path | None = None) -> dict[str, n
     if spec.startswith("builtin:"):
         key = spec.split(":", 1)[1]
         if key == "dojo" and "dojo" not in _BUILTIN_TEMPLATES:
-            import hakisa.envs.dojo_render  # noqa: F401  (registers the simulator font)
+            importlib.import_module("hakisa.envs.dojo_render")  # registers the simulator font
         return _BUILTIN_TEMPLATES[key]()
     path = Path(spec)
     if not path.is_absolute() and base_dir is not None:

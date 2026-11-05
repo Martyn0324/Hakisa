@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import torch
 
-from hakisa.basal_ganglia.heads import ActionDistribution, PointerLogits
+from hakisa.basal_ganglia.heads import PointerLogits
 from hakisa.config import load_game_config
 from hakisa.models import BulletHeavenNet, JigokuNet, LoLNet, build_policy, load_policy, save_policy
 

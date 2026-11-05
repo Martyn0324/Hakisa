@@ -16,8 +16,6 @@ import json
 import sys
 from pathlib import Path
 
-import torch
-
 from hakisa.config import available_games, load_game_config
 from hakisa.utils import pick_device, seed_everything
 

@@ -82,8 +82,8 @@ class AsyncPlanner:
 def load_planner(directory: str, cfg, device: torch.device, hz: float = 1.0) -> AsyncPlanner:  # pragma: no cover
     dtype = torch.float16 if device.type == "cuda" else torch.float32
     pf = Prefrontal.load(directory, device=device, dtype=dtype)
-    state_fn = bullet_hell_state_text
-    if cfg.name == "lol":
-        def state_fn(hud):  # noqa: E306
-            return hud.get("text") or "no live data"
-    return AsyncPlanner(pf, hz=hz, state_text_fn=state_fn)
+
+    def lol_state(hud: dict) -> str:
+        return hud.get("text") or "no live data"
+
+    return AsyncPlanner(pf, hz=hz, state_text_fn=lol_state if cfg.name == "lol" else bullet_hell_state_text)
