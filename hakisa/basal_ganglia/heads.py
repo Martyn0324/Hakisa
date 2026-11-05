@@ -191,11 +191,18 @@ class ActionDistribution:
 
     # -- sampling ---------------------------------------------------------------------------------
     def sample_categorical(self, deterministic: bool = False, temperature: float = 1.0) -> dict[str, torch.Tensor]:
-        """``temperature`` < 1 sharpens play-time sampling (RL always samples at 1)."""
+        """``temperature`` < 1 sharpens play-time sampling of *held* controls (RL always samples at 1).
+
+        Rare edge-triggered commands (``mode: tap``, e.g. bombs) keep their calibrated probability: a
+        per-tick bomb probability of 2 % is meaningful, and sharpening (or argmax) would erase it — measured
+        in the simulator, a greedy RL policy stopped bombing and survived 22 s instead of 55 s.
+        """
         out = {}
         for h in self.space.categorical_heads:
             logits = self.out.logits[h.name]
-            if deterministic:
+            if h.mode == "tap":
+                out[h.name] = torch.multinomial(F.softmax(logits, -1), 1)[:, 0]
+            elif deterministic:
                 out[h.name] = logits.argmax(-1)
             else:
                 out[h.name] = torch.multinomial(F.softmax(logits / temperature, -1), 1)[:, 0]

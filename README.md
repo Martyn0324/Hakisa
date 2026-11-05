@@ -89,7 +89,48 @@ All numbers below were produced in a 4-core CPU cloud container (no GPU) by the 
 `scripts/`; nothing was run on the real games (they need Windows/Steam/Riot clients), and the
 Qwen3-0.6B weights could not be downloaded there. See [`docs/results/`](docs/results/).
 
-RESULTS_PLACEHOLDER
+### DanmakuDojo (simulator): Study → Play & teach → Consolidation
+
+**dojo_keyboard** (difficulty 2.0, 32 evaluation episodes per agent, ±95% CI)
+
+| Agent | Return | Deaths / episode | Survival (s, max 90) | Score | Stage clear | Bombs |
+|---|---|---|---|---|---|---|
+| Random inputs | 0.63 ± 0.50 | 3.00 ± 0.00 | 20.6 | 12289 | 0% | 2.44 |
+| Scripted demonstrator (the 'human') | 19.34 ± 0.25 | 0.59 ± 0.21 | 88.6 | 24655 | 12% | 1.69 |
+| Study (BC) | -0.14 ± 0.26 | 3.00 ± 0.00 | 17.2 | 4302 | 0% | 0.06 |
+| + Play & teach, DAgger round 1 | 0.09 ± 0.36 | 3.00 ± 0.00 | 18.1 | 5440 | 0% | 0.25 |
+| + Play & teach, DAgger round 2 | 0.91 ± 0.53 | 3.00 ± 0.00 | 21.1 | 8929 | 0% | 0.66 |
+| + Consolidation (PPO, KL-anchored) | 8.69 ± 0.76 | 3.00 ± 0.00 | 55.4 | 33509 | 0% | 5.78 |
+
+**dojo_mouse** (difficulty 2.0, 32 evaluation episodes per agent, ±95% CI)
+
+| Agent | Return | Deaths / episode | Survival (s, max 90) | Score | Stage clear | Bombs |
+|---|---|---|---|---|---|---|
+| Random inputs | -1.13 ± 0.29 | 3.00 ± 0.00 | 13.3 | 5834 | 0% | 1.22 |
+| Scripted demonstrator (the 'human') | 18.85 ± 0.72 | 0.69 ± 0.33 | 88.8 | 19547 | 3% | 0.50 |
+| Study (BC) | -0.80 ± 0.18 | 3.00 ± 0.00 | 14.6 | 2965 | 0% | 0.03 |
+| + Play & teach, DAgger round 1 | -0.51 ± 0.17 | 3.00 ± 0.00 | 15.7 | 3559 | 0% | 0.03 |
+| + Play & teach, DAgger round 2 | -0.46 ± 0.27 | 3.00 ± 0.00 | 15.8 | 4057 | 0% | 0.06 |
+| + Consolidation (PPO, KL-anchored) | 5.64 ± 0.46 | 3.00 ± 0.00 | 41.4 | 31310 | 0% | 5.91 |
+
+RL was stopped early (keyboard 410k, mouse 287k environment steps) for CPU budget. With play temperature 0.5
+applied to held controls only, the keyboard RL policy reaches **10.95 return / 65.8 s** survival.
+Random input survives a bit longer than early BC only because it bombs at random (invulnerability).
+
+### System 2 (tiny Qwen3-architecture stand-in, not the pre-trained 0.6B)
+
+96 episodes per arm: System 1 alone −0.44 ± 0.14 → + supervised planner −0.17 ± 0.20 (Welch t ≈ 2.2);
+GRPO planner −0.18 ± 0.19 (no extra gain). Details and the intent-following check: [`docs/results/system2/`](docs/results/system2/).
+
+### Decision latency (CPU, 4 cores, batch 1, idle; `docs/results/latency_cpu.jsonl`)
+
+| Network | Params | Median latency |
+|---|---|---|
+| JigokuNet small (192×160) | 0.55 M | 7.7 ms |
+| BulletHeavenNet small (144×192) | 0.54 M | 8.5 ms |
+| LoLNet small (main + minimap) | 0.74 M | 11.8 ms |
+| *base* presets | 1.45–1.65 M | 9.4–15.3 ms |
+
 
 ## Practical tips (learned the hard way in the simulator)
 

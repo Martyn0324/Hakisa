@@ -1,0 +1,8 @@
+{"game": "jigoku", "arch": "jigoku", "preset": "small", "input": [9, 192, 160], "params_M": 0.551, "latency_ms_median": 7.73, "latency_ms_p90": 10.29, "throughput_fps_b64": 199.3, "device": "cpu", "threads": 4}
+{"game": "bullet_heaven2", "arch": "bullet_heaven", "preset": "small", "input": [10, 144, 192], "params_M": 0.54, "latency_ms_median": 8.52, "latency_ms_p90": 10.3, "throughput_fps_b64": 202.2, "device": "cpu", "threads": 4}
+{"game": "lol", "arch": "lol", "preset": "small", "input": [6, 144, 256], "params_M": 0.741, "latency_ms_median": 11.8, "latency_ms_p90": 12.95, "throughput_fps_b64": 147.9, "device": "cpu", "threads": 4}
+{"game": "dojo_keyboard", "arch": "jigoku", "preset": "nano", "input": [9, 112, 96], "params_M": 0.2, "latency_ms_median": 4.1, "latency_ms_p90": 5.36, "throughput_fps_b64": 2407.2, "device": "cpu", "threads": 4}
+{"game": "dojo_mouse", "arch": "bullet_heaven", "preset": "nano", "input": [10, 112, 96], "params_M": 0.193, "latency_ms_median": 5.02, "latency_ms_p90": 5.61, "throughput_fps_b64": 2043.0, "device": "cpu", "threads": 4}
+{"game": "jigoku", "arch": "jigoku", "preset": "base", "input": [9, 192, 160], "params_M": 1.461, "latency_ms_median": 11.47, "latency_ms_p90": 12.71, "throughput_fps_b64": 113.3, "device": "cpu", "threads": 4}
+{"game": "bullet_heaven2", "arch": "bullet_heaven", "preset": "base", "input": [10, 144, 192], "params_M": 1.449, "latency_ms_median": 9.43, "latency_ms_p90": 9.88, "throughput_fps_b64": 103.7, "device": "cpu", "threads": 4}
+{"game": "lol", "arch": "lol", "preset": "base", "input": [6, 144, 256], "params_M": 1.652, "latency_ms_median": 15.27, "latency_ms_p90": 17.04, "throughput_fps_b64": 91.6, "device": "cpu", "threads": 4}

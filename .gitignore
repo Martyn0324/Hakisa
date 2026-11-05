@@ -8,3 +8,4 @@ __pycache__/
 *.pt
 !docs/results/**/*.pt
 .ipynb_checkpoints/
+logs/
