@@ -63,3 +63,13 @@
 04:39:07 [study] step 2550/3485 epoch 3 loss 2.0403
 04:39:41 [study] step 2600/3485 epoch 3 loss 2.0351
 04:40:02 [study] step 2650/3485 epoch 3 loss 2.0579
+04:40:23 [study] step 2700/3485 epoch 3 loss 2.0522
+04:40:53 [study] step 2750/3485 epoch 3 loss 2.0628
+04:41:38 [study] epoch 3 done: acc/bomb=0.999, acc/danger=0.989, acc/focus=0.877, acc/move=0.462, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.801, f1/shoot=1.000, nll/total=1.937
+04:41:43 [study] step 2800/3485 epoch 4 loss 2.0497
+04:42:04 [study] step 2850/3485 epoch 4 loss 2.0341
+04:42:26 [study] step 2900/3485 epoch 4 loss 2.0205
+04:42:48 [study] step 2950/3485 epoch 4 loss 2.0406
+04:43:10 [study] step 3000/3485 epoch 4 loss 2.0477
+04:43:32 [study] step 3050/3485 epoch 4 loss 2.0415
+04:44:06 [study] step 3100/3485 epoch 4 loss 2.0308
