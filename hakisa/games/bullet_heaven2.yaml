@@ -1,0 +1,72 @@
+# Bullet Heaven 2 (Steam / Flash) — mouse bullet hell.
+# Mouse moves the ship, LEFT button held = shoot (auto-shoot enabled), RIGHT click = bomb, Shift = slow.
+# (Community wiki: mouse movement, left-click main weapon, right-click bomb, Shift slows movement.)
+#
+# CALIBRATE before training RL:  hakisa calibrate --game bullet_heaven2
+name: bullet_heaven2
+title: "Bullet Heaven 2"
+tick_hz: 20
+
+capture:
+  backend: auto
+  window_title: "Bullet Heaven"
+  region: null
+
+obs:
+  height: 144                     # landscape playfield (resized "effective window")
+  width: 192
+  stack: 3
+  cursor_channel: true            # extra input channel: where the mouse currently is
+  crop: null                      # CALIBRATE: playfield inside the captured window
+
+actions:
+  lookahead_ms: 100
+  heads:
+    - name: pointer               # where to put the cursor (the ship follows it)
+      type: pointer
+      stride: 4                   # coarse grid = obs/4 = 36 x 48 cells, sub = 4x4 -> 144 x 192 fine positions
+    - {name: fire, type: binary, mode: hold, button: left}
+    - {name: bomb, type: binary, mode: tap, button: right, weight: 2.0}
+    - {name: slow, type: binary, mode: hold, keys: [shift]}
+
+probes:
+  - {name: lives, type: pixel_count, region: [0, 0, 1, 1], color: [255, 80, 80], tol: 40, unit_pixels: 1, calibrated: false}
+  - {name: bombs, type: pixel_count, region: [0, 0, 1, 1], color: [80, 160, 255], tol: 40, unit_pixels: 1, calibrated: false}
+  - {name: score, type: digits, region: [0, 0, 1, 1], templates: templates/bh2_digits, calibrated: false}
+  - {name: game_over, type: template, region: [0, 0, 1, 1], template: templates/bh2_game_over.png, threshold: 0.85, calibrated: false}
+
+reward:
+  survival: 0.01
+  life_lost: -1.0
+  bomb_used: -0.3
+  score_scale: 0.0001
+  score_clip: 1.0
+  game_over: -1.0
+  stage_clear: 2.0
+
+model:
+  arch: bullet_heaven             # BulletHeavenNet: encoder + superior-colliculus pointer decoder
+  preset: small
+  danger_horizon: 20
+
+training:
+  bc: {epochs: 10, batch_size: 64, lr: 0.0005, weight_decay: 0.05, label_smoothing: 0.05, flip: true}
+  rl: {rollout_steps: 1024, epochs: 3, minibatch_size: 256, lr: 0.0001, gamma: 0.99, gae_lambda: 0.95,
+       kl_coef: 0.05, demo_coef: 0.1, critic_warmup_iters: 5, update_mode: async}
+
+intents:
+  horizon_s: 1.5
+  slots:
+    zone: [any, top_left, top, top_right, left, center, right, bottom_left, bottom, bottom_right]
+    focus: [any, off, on]         # "focus" = the slow (Shift) mode
+    bomb: [any, hold, now]
+
+record:
+  store_hud: true
+
+runtime:
+  kill_key: f12
+  pause_key: f9
+  takeover_key: f8
+  start_key: f7
+  reset_macro: []

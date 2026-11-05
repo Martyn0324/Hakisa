@@ -1,0 +1,63 @@
+# DanmakuDojo — mouse scheme (mirrors Bullet Heaven 2): the ship flies towards the cursor.
+name: dojo_mouse
+title: "DanmakuDojo (mouse)"
+tick_hz: 20
+
+capture:
+  backend: sim
+  window_title: "DanmakuDojo"
+  region: null
+
+obs:
+  height: 112
+  width: 96
+  stack: 3
+  cursor_channel: true
+  crop: [0, 0, 384, 448]
+
+actions:
+  lookahead_ms: 0
+  heads:
+    - name: pointer
+      type: pointer
+      stride: 4                   # 28 x 24 cells, 4x4 sub -> 112 x 96 fine positions
+    - {name: fire, type: binary, mode: hold, button: left}
+    - {name: bomb, type: binary, mode: tap, button: right, weight: 2.0}
+    - {name: slow, type: binary, mode: hold, keys: [shift]}
+
+probes:
+  - {name: lives, type: pixel_count, region: [400, 100, 128, 12], color: [255, 64, 64], tol: 30, unit_pixels: 144, calibrated: true}
+  - {name: bombs, type: pixel_count, region: [400, 150, 128, 12], color: [64, 220, 96], tol: 30, unit_pixels: 144, calibrated: true}
+  - {name: score, type: digits, region: [400, 44, 120, 14], templates: "builtin:dojo", calibrated: true}
+
+reward:
+  survival: 0.01
+  life_lost: -1.0
+  bomb_used: -0.3
+  score_scale: 0.0001
+  score_clip: 1.0
+  game_over: -1.0
+  stage_clear: 2.0
+
+model:
+  arch: bullet_heaven
+  preset: nano
+  danger_horizon: 20
+
+training:
+  bc: {epochs: 6, batch_size: 128, lr: 0.001, weight_decay: 0.05, label_smoothing: 0.05, flip: true}
+  rl: {rollout_steps: 128, num_envs: 16, epochs: 3, minibatch_size: 512, lr: 0.0002, gamma: 0.99, gae_lambda: 0.95,
+       kl_coef: 0.03, demo_coef: 0.05, critic_warmup_iters: 10, update_mode: sync}
+
+intents:
+  horizon_s: 1.5
+  slots:
+    zone: [any, top_left, top, top_right, left, center, right, bottom_left, bottom, bottom_right]
+    focus: [any, off, on]
+    bomb: [any, hold, now]
+
+runtime:
+  kill_key: f12
+  pause_key: f9
+  takeover_key: f8
+  start_key: f7

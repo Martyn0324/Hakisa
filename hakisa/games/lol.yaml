@@ -1,0 +1,125 @@
+# League of Legends — ARAM / normal games (duo).
+#
+# !!! RISK NOTICE !!!  Automating inputs in League of Legends violates Riot Games' Terms of Service and
+# Riot Vanguard may detect injected input; accounts can be banned. Hakisa contains NO anti-detection or
+# evasion features. Use it in Practice Tool / custom games against bots, at your own risk.
+#
+# Assumed in-game settings (Settings > Hotkeys / Game):
+#   - Quick Cast for Q/W/E/R/D/F and items (spells fire at the cursor when the key is pressed)
+#   - "Attack Move on Cursor" enabled (A issues attack-move at the cursor)
+#   - Camera LOCKED (Y) so the champion stays centred; 1920x1080 window
+# Live game stats come from Riot's local Live Client Data API (https://127.0.0.1:2999/liveclientdata/allgamedata).
+name: lol
+title: "League of Legends"
+tick_hz: 10
+
+capture:
+  backend: auto
+  window_title: "League of Legends (TM) Client"
+  region: null
+
+obs:
+  height: 144                     # main view = full 1920x1080 frame resized to 256x144
+  width: 256
+  stack: 2
+  aux_dim: 32                     # game-state vector from the Live Client API (see hakisa/limbic/lol_client.py)
+  crop: null
+  minimap:
+    region: [1645, 805, 270, 270] # CALIBRATE: minimap square inside the captured frame
+    height: 64
+    width: 64
+
+actions:
+  lookahead_ms: 50
+  heads:
+    - name: action_type
+      type: categorical
+      mode: tap                   # one command per tick; best press event in the label window wins
+      choices:
+        noop: {}
+        move_click: {button: right, pointer: pointer, hold_ok: true, priority: 1, where: main}
+        minimap_move: {button: right, pointer: minimap_pointer, hold_ok: true, priority: 1, where: minimap}
+        attack_move: {keys: [a], pointer: pointer, priority: 2}
+        stop: {keys: [s], priority: 2}
+        q: {keys: [q], pointer: pointer, priority: 5}
+        w: {keys: [w], pointer: pointer, priority: 5}
+        e: {keys: [e], pointer: pointer, priority: 5}
+        r: {keys: [r], pointer: pointer, priority: 5}
+        d: {keys: [d], pointer: pointer, priority: 5}
+        f: {keys: [f], pointer: pointer, priority: 5}
+        item1: {keys: ["1"], pointer: pointer, priority: 4}
+        item2: {keys: ["2"], pointer: pointer, priority: 4}
+        item3: {keys: ["3"], pointer: pointer, priority: 4}
+        item4: {keys: ["4"], pointer: pointer, priority: 4}   # trinket / ward by default
+        item5: {keys: ["5"], pointer: pointer, priority: 4}
+        item6: {keys: ["6"], pointer: pointer, priority: 4}
+        item7: {keys: ["7"], pointer: pointer, priority: 4}
+        item8: {keys: ["8"], pointer: pointer, priority: 4}
+        item9: {keys: ["9"], pointer: pointer, priority: 4}
+        recall: {keys: [b], priority: 3}
+        level_q: {keys: [ctrl, q], priority: 6}
+        level_w: {keys: [ctrl, w], priority: 6}
+        level_e: {keys: [ctrl, e], priority: 6}
+        level_r: {keys: [ctrl, r], priority: 6}
+    - name: pointer               # target on the main view, conditioned on the action type (AlphaStar-style)
+      type: pointer
+      stride: 4                   # 36 x 64 cells, 4x4 sub -> 144 x 256 fine positions (~7.5 px at 1080p)
+      conditioned_on: action_type
+    - name: minimap_pointer
+      type: pointer
+      source: minimap
+      stride: 4                   # 16 x 16 cells, 4x4 sub -> 64 x 64 fine positions
+
+probes: []                        # LoL uses the Live Client Data API instead of HUD probes
+
+reward:                           # LoLReward weights (per event / per unit)
+  gold: 0.002                     # per gold earned
+  cs: 0.15                        # per creep score
+  kill: 1.0
+  assist: 0.5
+  death: -1.5
+  level: 0.3
+  hp_loss: -0.5                   # per 100% of max HP lost
+  hp_gain: 0.1                    # per 100% of max HP healed
+  turret: 0.8                     # turret destroyed by my team
+  turret_lost: -0.8
+  dragon: 0.8
+  baron: 1.5
+  inhibitor: 1.0
+  win: 10.0
+  lose: -10.0
+  live_client_url: "https://127.0.0.1:2999/liveclientdata/allgamedata"
+
+model:
+  arch: lol                       # LoLNet: main-view + minimap encoders, game vector, type->pointer
+  preset: small
+  minimap_preset: nano
+
+training:
+  bc: {epochs: 10, batch_size: 48, lr: 0.0005, weight_decay: 0.05, label_smoothing: 0.05, flip: false}
+  rl: {rollout_steps: 2048, epochs: 3, minibatch_size: 256, lr: 0.00005, gamma: 0.995, gae_lambda: 0.95,
+       kl_coef: 0.1, demo_coef: 0.2, critic_warmup_iters: 10, update_mode: async}
+
+intents:
+  horizon_s: 10.0
+  slots:
+    objective: [any, farm, fight, push, retreat, recall, dragon, baron, roam]
+    lane: [any, top, mid, bot, jungle, base]
+    risk: [any, low, medium, high]
+
+record:
+  live_client_hz: 2
+
+runtime:
+  kill_key: f12
+  pause_key: f9
+  takeover_key: f8
+  start_key: f7
+  reset_macro: []
+  instruction_keys:               # duo partner -> Hakisa (System 2 instructions)
+    f1: "follow me"
+    f2: "go top"
+    f3: "go mid"
+    f4: "go bot"
+    f5: "retreat now"
+    f6: "all in, fight"

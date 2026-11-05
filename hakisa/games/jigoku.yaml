@@ -1,0 +1,85 @@
+# Jigoku Kisetsukan: Sense of the Seasons (Steam, free) — keyboard bullet hell.
+# Controls (as set by the owner): WASD move, Shift focus, Z shoot, X bomb.
+#
+# CALIBRATE before training RL:  hakisa calibrate --game jigoku
+#   - capture.window_title must match (a substring of) the game window title
+#   - obs.crop  = the playfield ("effective window") inside the captured image
+#   - probes    = where lives / bombs / score are drawn on the HUD
+# Coordinates are physical pixels of the captured image (DPI-aware).
+name: jigoku
+title: "Jigoku Kisetsukan: Sense of the Seasons"
+tick_hz: 20                       # decisions per second (the human recording also runs at this rate)
+
+capture:
+  backend: auto                   # auto -> dxcam on Windows if installed, else mss
+  window_title: "Jigoku"          # substring of the window title (null = absolute screen region below)
+  region: null                    # [left, top, width, height] relative to the window client area; null = whole client
+
+obs:
+  height: 192                     # vertical playfield -> taller than wide
+  width: 160
+  stack: 3                        # last 3 frames (RGB) -> bullet motion is visible
+  crop: null                      # [x, y, w, h] playfield inside the capture (CALIBRATE: exclude the side HUD)
+
+actions:
+  lookahead_ms: 100               # label = what the human did 100 ms after the frame (reaction time)
+  heads:
+    - name: move
+      type: categorical
+      mode: hold
+      choices:
+        none: []
+        up: [w]
+        down: [s]
+        left: [a]
+        right: [d]
+        up_left: [w, a]
+        up_right: [w, d]
+        down_left: [s, a]
+        down_right: [s, d]
+    - {name: focus, type: binary, mode: hold, keys: [shift]}
+    - {name: shoot, type: binary, mode: hold, keys: [z]}
+    - {name: bomb, type: binary, mode: tap, keys: [x], weight: 2.0}
+
+# HUD probes (limbic system). Fill the regions/colours with `hakisa calibrate --game jigoku`.
+probes:
+  - {name: lives, type: pixel_count, region: [0, 0, 1, 1], color: [255, 80, 80], tol: 40, unit_pixels: 1, calibrated: false}
+  - {name: bombs, type: pixel_count, region: [0, 0, 1, 1], color: [80, 220, 120], tol: 40, unit_pixels: 1, calibrated: false}
+  - {name: score, type: digits, region: [0, 0, 1, 1], templates: templates/jigoku_digits, calibrated: false}
+  - {name: game_over, type: template, region: [0, 0, 1, 1], template: templates/jigoku_game_over.png, threshold: 0.85, calibrated: false}
+
+reward:                            # BulletHellReward weights
+  survival: 0.01
+  life_lost: -1.0
+  bomb_used: -0.3
+  score_scale: 0.0001
+  score_clip: 1.0
+  game_over: -1.0
+  stage_clear: 2.0
+
+model:
+  arch: jigoku                    # JigokuNet: encoder + foveal attention head (+ danger head)
+  preset: small
+  danger_horizon: 20              # ticks: "will I lose a life within 1 s?"
+
+training:
+  bc: {epochs: 10, batch_size: 64, lr: 0.0005, weight_decay: 0.05, label_smoothing: 0.05, flip: true}
+  rl: {rollout_steps: 1024, epochs: 3, minibatch_size: 256, lr: 0.0001, gamma: 0.99, gae_lambda: 0.95,
+       kl_coef: 0.05, demo_coef: 0.1, critic_warmup_iters: 5, update_mode: async}
+
+intents:                          # System 2 (prefrontal) plan slots
+  horizon_s: 1.5
+  slots:
+    zone: [any, top_left, top, top_right, left, center, right, bottom_left, bottom, bottom_right]
+    focus: [any, off, on]
+    bomb: [any, hold, now]
+
+record:
+  store_hud: true                 # also store the (small) HUD probe readings per tick
+
+runtime:
+  kill_key: f12                   # stops everything and releases all keys
+  pause_key: f9                   # pause / resume Hakisa
+  takeover_key: f8                # human takes control (corrections are recorded)
+  start_key: f7                   # "episode started" signal when no reset macro is configured
+  reset_macro: []                 # e.g. [{key: z, delay: 0.5}, {key: z, delay: 2.0}] to restart after game over
