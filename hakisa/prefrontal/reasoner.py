@@ -105,6 +105,8 @@ class Prefrontal(nn.Module):
         torch.save(self.adapter_state(), d / "prefrontal.pt")
         meta = {"spec": self.spec, "vis_dim": self.vis_dim, "n_vis": self.n_vis, "title": self.title,
                 "schema": self.schema.slots, "train_mode": self.train_mode}
+        if self.spec == "tiny-qwen3":  # randomly initialised stand-in: its size is not implied by the name
+            meta["llm_config"] = self.llm.config.to_dict()
         (d / "prefrontal.json").write_text(json.dumps(meta, indent=2))
 
     @classmethod
@@ -112,7 +114,15 @@ class Prefrontal(nn.Module):
              local_files_only: bool = False) -> "Prefrontal":
         d = Path(directory)
         meta = json.loads((d / "prefrontal.json").read_text())
-        llm, tok = load_llm(meta["spec"], device, dtype, local_files_only)
+        if meta["spec"] == "tiny-qwen3" and "llm_config" in meta:
+            from transformers import Qwen3Config, Qwen3ForCausalLM
+
+            from hakisa.prefrontal.llm import ByteTokenizer
+
+            llm = Qwen3ForCausalLM(Qwen3Config.from_dict(meta["llm_config"])).to(device=device, dtype=dtype)
+            tok = ByteTokenizer()
+        else:
+            llm, tok = load_llm(meta["spec"], device, dtype, local_files_only)
         pf = cls(llm, tok, meta["vis_dim"], IntentSchema(meta["schema"]), meta["title"], meta["n_vis"], meta["spec"], meta["train_mode"])
         pf.load_state_dict(torch.load(d / "prefrontal.pt", map_location="cpu"), strict=False)
         return pf.to(device)

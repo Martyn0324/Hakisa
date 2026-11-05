@@ -162,3 +162,4 @@
 07:33:14 [consolidation] it 95/292 steps 194560 ret 9.00 kl_ref 0.305 v_loss 0.231 ev 0.64
 07:43:01 [consolidation] it 100/292 steps 204800 ret 9.28 kl_ref 0.191 v_loss 0.072 ev 0.41
 07:48:38 [consolidation] it 105/292 steps 215040 ret 9.42 kl_ref 0.381 v_loss 0.212 ev 0.77
+07:54:34 [consolidation] it 110/292 steps 225280 ret 9.69 kl_ref 0.310 v_loss 0.108 ev 0.77

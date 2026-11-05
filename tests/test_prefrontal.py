@@ -133,3 +133,17 @@ def test_async_planner_publishes_and_expires():
         planner.stop()
     time.sleep(0.4)
     assert planner.latest_intent("cpu") is None  # stale plans are dropped
+
+
+def test_save_load_non_default_tiny_size(tmp_path):
+    from hakisa.prefrontal.llm import ByteTokenizer, tiny_qwen3
+
+    torch.manual_seed(0)
+    pf = Prefrontal(tiny_qwen3(ByteTokenizer().vocab_size, hidden=96, layers=3, heads=6), ByteTokenizer(), vis_dim=64,
+                    schema=_schema(), title="X", spec="tiny-qwen3", train_mode="full")
+    pf.save(tmp_path / "s2")
+    pf2 = Prefrontal.load(tmp_path / "s2")
+    vis = torch.randn(1, 17, 64)
+    prompt = [make_prompt("X", "lives 3", None, None)]
+    comp = ["PLAN: zone=top focus=on bomb=hold"]
+    assert torch.allclose(pf.loss(vis, prompt, comp), pf2.loss(vis, prompt, comp), atol=1e-5)

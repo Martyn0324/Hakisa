@@ -1,0 +1,41 @@
+S1 alone {'episodes': 96.0, 'episode_return': -0.27994797624220763, 'episode_return_se': 0.07360274334416748, 'episode_length': 329.8333333333333, 'episode_length_se': 5.860132675184089, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 4654.6875, 'episode_score_se': 289.627102704775, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.14583333333333334, 'episode_bombs_se': 0.0391218481905949}
+Traceback (most recent call last):
+  File "/home/user/Hakisa/scripts/s2_eval_more.py", line 45, in <module>
+    main()
+    ~~~~^^
+  File "/home/user/Hakisa/scripts/s2_eval_more.py", line 38, in main
+    pf = Prefrontal.load(f"runs/dojo_keyboard/{name}").eval()
+         ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Hakisa/hakisa/prefrontal/reasoner.py", line 117, in load
+    pf.load_state_dict(torch.load(d / "prefrontal.pt", map_location="cpu"), strict=False)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 2647, in load_state_dict
+    raise RuntimeError(
+    ...<3 lines>...
+    )
+RuntimeError: Error(s) in loading state_dict for Prefrontal:
+	size mismatch for vis_pos: copying a param with shape torch.Size([1, 17, 192]) from checkpoint, the shape in current model is torch.Size([1, 17, 128]).
+	size mismatch for llm.model.embed_tokens.weight: copying a param with shape torch.Size([259, 192]) from checkpoint, the shape in current model is torch.Size([259, 128]).
+	size mismatch for llm.model.layers.0.self_attn.q_proj.weight: copying a param with shape torch.Size([192, 192]) from checkpoint, the shape in current model is torch.Size([128, 128]).
+	size mismatch for llm.model.layers.0.self_attn.k_proj.weight: copying a param with shape torch.Size([96, 192]) from checkpoint, the shape in current model is torch.Size([64, 128]).
+	size mismatch for llm.model.layers.0.self_attn.v_proj.weight: copying a param with shape torch.Size([96, 192]) from checkpoint, the shape in current model is torch.Size([64, 128]).
+	size mismatch for llm.model.layers.0.self_attn.o_proj.weight: copying a param with shape torch.Size([192, 192]) from checkpoint, the shape in current model is torch.Size([128, 128]).
+	size mismatch for llm.model.layers.0.mlp.gate_proj.weight: copying a param with shape torch.Size([384, 192]) from checkpoint, the shape in current model is torch.Size([256, 128]).
+	size mismatch for llm.model.layers.0.mlp.up_proj.weight: copying a param with shape torch.Size([384, 192]) from checkpoint, the shape in current model is torch.Size([256, 128]).
+	size mismatch for llm.model.layers.0.mlp.down_proj.weight: copying a param with shape torch.Size([192, 384]) from checkpoint, the shape in current model is torch.Size([128, 256]).
+	size mismatch for llm.model.layers.0.input_layernorm.weight: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([128]).
+	size mismatch for llm.model.layers.0.post_attention_layernorm.weight: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([128]).
+	size mismatch for llm.model.layers.1.self_attn.q_proj.weight: copying a param with shape torch.Size([192, 192]) from checkpoint, the shape in current model is torch.Size([128, 128]).
+	size mismatch for llm.model.layers.1.self_attn.k_proj.weight: copying a param with shape torch.Size([96, 192]) from checkpoint, the shape in current model is torch.Size([64, 128]).
+	size mismatch for llm.model.layers.1.self_attn.v_proj.weight: copying a param with shape torch.Size([96, 192]) from checkpoint, the shape in current model is torch.Size([64, 128]).
+	size mismatch for llm.model.layers.1.self_attn.o_proj.weight: copying a param with shape torch.Size([192, 192]) from checkpoint, the shape in current model is torch.Size([128, 128]).
+	size mismatch for llm.model.layers.1.mlp.gate_proj.weight: copying a param with shape torch.Size([384, 192]) from checkpoint, the shape in current model is torch.Size([256, 128]).
+	size mismatch for llm.model.layers.1.mlp.up_proj.weight: copying a param with shape torch.Size([384, 192]) from checkpoint, the shape in current model is torch.Size([256, 128]).
+	size mismatch for llm.model.layers.1.mlp.down_proj.weight: copying a param with shape torch.Size([192, 384]) from checkpoint, the shape in current model is torch.Size([128, 256]).
+	size mismatch for llm.model.layers.1.input_layernorm.weight: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([128]).
+	size mismatch for llm.model.layers.1.post_attention_layernorm.weight: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([128]).
+	size mismatch for llm.model.norm.weight: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([128]).
+	size mismatch for projector.1.weight: copying a param with shape torch.Size([192, 64]) from checkpoint, the shape in current model is torch.Size([128, 64]).
+	size mismatch for projector.1.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([128]).
+	size mismatch for projector.3.weight: copying a param with shape torch.Size([192, 192]) from checkpoint, the shape in current model is torch.Size([128, 128]).
+	size mismatch for projector.3.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([128]).
