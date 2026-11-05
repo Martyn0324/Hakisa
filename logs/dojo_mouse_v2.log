@@ -123,3 +123,23 @@
 06:02:40 [study] step 400/1249 epoch 0 loss 4.8536
 06:05:15 [study] step 450/1249 epoch 0 loss 4.8438
 06:07:28 [study] step 500/1249 epoch 0 loss 4.8271
+06:09:52 [study] step 550/1249 epoch 0 loss 4.8412
+06:12:39 [study] step 600/1249 epoch 0 loss 4.7978
+06:15:21 [study] step 650/1249 epoch 0 loss 4.7810
+06:18:33 [study] step 700/1249 epoch 0 loss 4.7833
+06:21:12 [study] step 750/1249 epoch 0 loss 4.7536
+06:23:38 [study] step 800/1249 epoch 0 loss 4.7696
+06:26:18 [study] step 850/1249 epoch 0 loss 4.7514
+06:28:22 [study] step 900/1249 epoch 0 loss 4.7725
+06:30:06 [study] step 950/1249 epoch 0 loss 4.7317
+06:32:04 [study] step 1000/1249 epoch 0 loss 4.7177
+06:33:58 [study] step 1050/1249 epoch 0 loss 4.6962
+06:35:54 [study] step 1100/1249 epoch 0 loss 4.7198
+06:37:48 [study] step 1150/1249 epoch 0 loss 4.7210
+06:39:48 [study] step 1200/1249 epoch 0 loss 4.6944
+06:44:17 [study] epoch 0 done: acc/bomb=1.000, acc/danger=0.925, acc/fire=1.000, acc/slow=0.898, acc2/pointer=0.480, err/pointer=5.291, f1/bomb=0.000, f1/fire=1.000, f1/slow=0.465, nll/total=4.238
+06:49:09 DAgger round 1 (sampled): {'episodes': 32.0, 'episode_return': -0.45839067685301416, 'episode_return_se': 0.1353483338169611, 'episode_length': 315.46875, 'episode_length_se': 11.271036279799851, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 4056.71875, 'episode_score_se': 378.9565210249969, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.0625, 'episode_bombs_se': 0.04347552147751577}
+06:49:09 RL starts from runs/dojo_mouse/dagger1/best.pt
+06:49:21 [consolidation] it 1/292 steps 2048 ret nan kl_ref 0.000 v_loss 1.500 ev 0.01
+06:50:21 [consolidation] it 5/292 steps 10240 ret -0.58 kl_ref 0.000 v_loss 0.583 ev 0.61
+06:51:32 [consolidation] it 10/292 steps 20480 ret -0.40 kl_ref 0.000 v_loss 0.201 ev 0.78

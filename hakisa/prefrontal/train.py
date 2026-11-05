@@ -219,6 +219,35 @@ def play_with_planner(s1, pf: Prefrontal | None, make_env, episodes: int, schema
     return out
 
 
+@torch.no_grad()
+def intent_following(s1, schema: IntentSchema, make_env, ticks: int = 60, seed: int = 9, device="cpu") -> dict[str, float]:
+    """Does System 1 obey System 2? Bomb probability, focus rate and horizontal position under fixed intents."""
+    s1.eval()
+    out: dict[str, float] = {}
+    probes = [("null", None), ("bomb_now", {"bomb": "now"}), ("focus_on", {"focus": "on"}), ("focus_off", {"focus": "off"}),
+              ("zone_bottom_left", {"zone": "bottom_left"}), ("zone_bottom_right", {"zone": "bottom_right"})]
+    for name, plan in probes:
+        if plan is not None and any(k not in schema.slots for k in plan):
+            continue
+        env = make_env(seed)
+        obs, info = env.reset(seed)
+        it = torch.from_numpy(np.tile(schema.encode(plan), (obs.shape[0], 1))).to(device)
+        p_bomb, focus, xs = 0.0, 0.0, []
+        focus_key = "focus" if "focus" in s1.space.label_keys() else "slow"
+        for _ in range(ticks):
+            o = torch.from_numpy(obs).to(device)
+            res = s1(o, intent=it)
+            a, *_ = s1.act(o, intent=it)
+            p_bomb += float(torch.softmax(res.logits["bomb"], -1)[:, 1].mean())
+            focus += float(a[focus_key].float().mean())
+            obs, r, term, trunc, info = env.step({k: v.cpu().numpy() for k, v in a.items()})
+            xs.append(float(info["player_xy"][:, 0].mean()))
+        out[f"{name}/p_bomb"] = p_bomb / ticks
+        out[f"{name}/focus_rate"] = focus / ticks
+        out[f"{name}/x"] = float(np.mean(xs[-10:]))
+    return out
+
+
 def grpo_train(pf: Prefrontal, s1, schema: IntentSchema, make_driver: Callable[[int], Any], steps: int = 200, group: int = 4,
                horizon: int = 30, beta: float = 0.04, lr: float = 5e-5, temperature: float = 1.0, advance: int = 15,
                invalid_penalty: float = 0.5, device: torch.device | str = "cpu", seed: int = 0,

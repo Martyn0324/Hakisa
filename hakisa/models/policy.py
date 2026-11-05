@@ -52,7 +52,9 @@ class HakisaPolicy(nn.Module):
         self.intent_dim = intent_dim
         self.intent_emb = nn.ModuleList([nn.Embedding(n, intent_dim) for n in self.intent_sizes])
         for emb in self.intent_emb:  # index 0 ("any") = null intent -> start at zero
-            nn.init.normal_(emb.weight, std=0.02)
+            # unit scale: with transformer-style std=0.02 the intent pathway learned ~100x too slowly
+            # (measured: P(focus | "focus=on") 0.54 vs 0.51 after 150 steps on intent-only labels)
+            nn.init.normal_(emb.weight, std=1.0)
             with torch.no_grad():
                 emb.weight[0].zero_()
 
@@ -109,6 +111,13 @@ class HakisaPolicy(nn.Module):
         if intent is None:
             intent = torch.zeros(batch, len(self.intent_sizes), dtype=torch.long, device=device)
         return sum(emb(intent[:, i]) for i, emb in enumerate(self.intent_emb))  # type: ignore[return-value]
+
+    def reset_intent_embeddings(self, std: float = 1.0) -> None:
+        """Re-initialise the non-null intent embeddings (before intent-conditioned fine-tuning of a policy
+        that was trained without intents: their rows never received gradient)."""
+        with torch.no_grad():
+            for emb in self.intent_emb:
+                emb.weight[1:].normal_(0.0, std)
 
     def freeze_bn(self) -> None:
         """Use running BN statistics (call for RL: rollout and update then see the same network)."""

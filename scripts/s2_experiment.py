@@ -25,7 +25,7 @@ from hakisa.models import load_policy
 from hakisa.prefrontal.intents import IntentSchema, hindsight_for_episode
 from hakisa.prefrontal.llm import load_llm, tiny_qwen3, ByteTokenizer
 from hakisa.prefrontal.reasoner import Prefrontal
-from hakisa.prefrontal.train import build_s2_samples, evaluate_s2, grpo_train, play_with_planner, train_s2_sl
+from hakisa.prefrontal.train import build_s2_samples, evaluate_s2, grpo_train, intent_following, play_with_planner, train_s2_sl
 from hakisa.study import StudyConfig, train_bc
 
 
@@ -84,6 +84,7 @@ def main() -> None:
                        intents=[intents[i] for i in train_ids], intent_flip=schema.flip)
         va = BCDataset([eps[i] for i in val_ids], cfg, intents=[intents[i] for i in val_ids])
         s1 = load_policy(args.bc).to_channels_last()
+        s1.reset_intent_embeddings()  # the BC/DAgger checkpoint never used its intent rows
         scfg = StudyConfig(epochs=args.s1_epochs, batch_size=128, lr=3e-4, amp=False, intent_dropout=0.3, warmup_frac=0.02)
         t0 = time.time()
         train_bc(s1, tr, va, scfg, s1_dir, device, log_fn=log)
@@ -93,6 +94,8 @@ def main() -> None:
     def make(seed: int) -> DanmakuDojo:
         return DanmakuDojo(num_envs=16, scheme="keyboard", difficulty=args.difficulty, seed=seed, max_steps=args.episode_ticks)
 
+    results["intent_following"] = intent_following(s1, schema, make, device=device)
+    log(f"System 1 intent following: {results['intent_following']}")
     results["s1_alone"] = play_with_planner(s1, None, make, args.episodes, schema, device=device)
     log(f"S1 alone (null intent): {results['s1_alone']}")
     save()
@@ -155,6 +158,9 @@ def write_report(results: dict, out: Path) -> None:
            "(the Hugging Face Hub was unreachable from the container). It validates the pipeline only." if llm.get("spec") == "tiny-qwen3" else ""),
         "",
         f"Plan accuracy of the supervised planner vs. hindsight plans (validation): {json.dumps(results.get('s2_sl_val', {}))}",
+        "",
+        "Does System 1 obey intents? (bomb probability / focus rate / mean x position under a fixed intent): "
+        + json.dumps({k: round(v, 3) for k, v in results.get("intent_following", {}).items()}),
         "",
         "| Agent | Return | Deaths / episode | Survival (s) | Score | Bombs | Invalid plans |",
         "|---|---|---|---|---|---|---|",

@@ -159,7 +159,42 @@
         "episode_bombs": 0.0,
         "episode_bombs_se": 0.0
       }
+    },
+    {
+      "round": 1,
+      "train_frames": 159970,
+      "seconds": 3261.877213716507,
+      "play_sampled": {
+        "episodes": 32.0,
+        "episode_return": -0.45839067685301416,
+        "episode_return_se": 0.1353483338169611,
+        "episode_length": 315.46875,
+        "episode_length_se": 11.271036279799851,
+        "episode_deaths": 3.0,
+        "episode_deaths_se": 0.0,
+        "episode_score": 4056.71875,
+        "episode_score_se": 378.9565210249969,
+        "episode_clear": 0.0,
+        "episode_clear_se": 0.0,
+        "episode_bombs": 0.0625,
+        "episode_bombs_se": 0.04347552147751577
+      },
+      "play_greedy": {
+        "episodes": 32.0,
+        "episode_return": -0.741062555462122,
+        "episode_return_se": 0.06360016983563234,
+        "episode_length": 301.09375,
+        "episode_length_se": 6.176072352851874,
+        "episode_deaths": 3.0,
+        "episode_deaths_se": 0.0,
+        "episode_score": 2480.0,
+        "episode_score_se": 178.83753214363534,
+        "episode_clear": 0.0,
+        "episode_clear_se": 0.0,
+        "episode_bombs": 0.0,
+        "episode_bombs_se": 0.0
+      }
     }
   ],
-  "dagger_final": "runs/dojo_mouse/dagger0/best.pt"
+  "dagger_final": "runs/dojo_mouse/dagger1/best.pt"
 }

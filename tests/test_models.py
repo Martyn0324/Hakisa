@@ -130,3 +130,31 @@ def test_temperature_sharpens_sampling():
     a, lp, _, _ = policy.act(obs, temperature=0.5)
     lp2, *_ = policy.evaluate_actions(obs, a)
     assert torch.allclose(lp, lp2, atol=1e-5)  # log-prob reported at T=1
+
+
+def test_intent_pathway_learns_quickly():
+    """Regression: with std=0.02 intent embeddings this stayed at ~0.5/0.5 after 150 steps."""
+    torch.manual_seed(0)
+    cfg = load_game_config("dojo_keyboard", overrides=["obs.height=32", "obs.width=32"])
+    pol = build_policy(cfg)
+    opt = torch.optim.AdamW(pol.parameters(), lr=3e-4)
+    for _ in range(120):
+        obs = torch.randint(0, 255, (32, 9, 32, 32), dtype=torch.uint8)
+        intent = torch.zeros(32, 3, dtype=torch.long)
+        intent[:, 1] = torch.randint(1, 3, (32,))
+        labels = {"move": torch.zeros(32, dtype=torch.long), "focus": (intent[:, 1] == 2).long(),
+                  "shoot": torch.ones(32, dtype=torch.long), "bomb": torch.zeros(32, dtype=torch.long)}
+        loss = sum(pol.distribution(pol(obs, intent=intent, condition=labels)).bc_losses(labels).values())
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
+    pol.eval()
+    obs = torch.randint(0, 255, (16, 9, 32, 32), dtype=torch.uint8)
+    on = torch.zeros(16, 3, dtype=torch.long)
+    on[:, 1] = 2
+    off = torch.zeros(16, 3, dtype=torch.long)
+    off[:, 1] = 1
+    with torch.no_grad():
+        p_on = torch.softmax(pol(obs, intent=on).logits["focus"], -1)[:, 1].mean()
+        p_off = torch.softmax(pol(obs, intent=off).logits["focus"], -1)[:, 1].mean()
+    assert p_on > 0.8 and p_off < 0.2

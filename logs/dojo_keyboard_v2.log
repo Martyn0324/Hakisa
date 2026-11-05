@@ -145,3 +145,10 @@
 05:55:44 [consolidation] it 10/292 steps 20480 ret 1.26 kl_ref 0.000 v_loss 0.282 ev 0.37
 05:59:36 [consolidation] it 15/292 steps 30720 ret 1.31 kl_ref 0.061 v_loss 0.276 ev 0.33
 06:06:08 [consolidation] it 20/292 steps 40960 ret 1.74 kl_ref 0.090 v_loss 0.175 ev 0.22
+06:18:20 [consolidation] it 25/292 steps 51200 ret 3.06 kl_ref 0.133 v_loss 0.435 ev 0.07
+06:25:08 [consolidation] it 30/292 steps 61440 ret 3.76 kl_ref 0.114 v_loss 0.250 ev 0.32
+06:30:27 [consolidation] it 35/292 steps 71680 ret 4.90 kl_ref 0.181 v_loss 0.322 ev 0.27
+06:35:15 [consolidation] it 40/292 steps 81920 ret 5.77 kl_ref 0.161 v_loss 0.186 ev 0.45
+06:40:14 [consolidation] it 45/292 steps 92160 ret 6.91 kl_ref 0.187 v_loss 0.233 ev 0.44
+06:49:20 [consolidation] it 50/292 steps 102400 ret 7.60 kl_ref 0.181 v_loss 0.087 ev 0.26
+06:51:02 [consolidation] it 55/292 steps 112640 ret 8.29 kl_ref 0.198 v_loss 0.095 ev 0.28
