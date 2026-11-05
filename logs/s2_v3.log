@@ -1,0 +1,55 @@
+07:00:41 hindsight intent counts: {'zone': [0, 0, 0, 0, 2, 33, 21, 33547, 36407, 29990], 'focus': [0, 77788, 22212], 'bomb': [0, 99160, 840]}
+07:01:08 [study] step 50/1414 epoch 0 loss 2.0716
+07:01:34 [study] step 100/1414 epoch 0 loss 1.9776
+07:01:59 [study] step 150/1414 epoch 0 loss 1.9419
+07:02:25 [study] step 200/1414 epoch 0 loss 1.8978
+07:02:51 [study] step 250/1414 epoch 0 loss 1.8876
+07:03:16 [study] step 300/1414 epoch 0 loss 1.8572
+07:03:41 [study] step 350/1414 epoch 0 loss 1.8519
+07:04:06 [study] step 400/1414 epoch 0 loss 1.8464
+07:04:31 [study] step 450/1414 epoch 0 loss 1.8311
+07:04:56 [study] step 500/1414 epoch 0 loss 1.8130
+07:05:19 [study] step 550/1414 epoch 0 loss 1.8254
+07:05:43 [study] step 600/1414 epoch 0 loss 1.8488
+07:06:07 [study] step 650/1414 epoch 0 loss 1.8264
+07:06:30 [study] step 700/1414 epoch 0 loss 1.8131
+07:06:46 [study] epoch 0 done: acc/bomb=0.999, acc/danger=0.987, acc/focus=0.878, acc/move=0.612, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.798, f1/shoot=1.000, nll/total=1.548
+07:07:08 [study] step 750/1414 epoch 1 loss 1.8892
+07:07:32 [study] step 800/1414 epoch 1 loss 1.8363
+07:07:56 [study] step 850/1414 epoch 1 loss 1.8086
+07:08:20 [study] step 900/1414 epoch 1 loss 1.7898
+07:08:44 [study] step 950/1414 epoch 1 loss 1.7947
+07:09:09 [study] step 1000/1414 epoch 1 loss 1.7783
+07:09:33 [study] step 1050/1414 epoch 1 loss 1.7785
+07:09:57 [study] step 1100/1414 epoch 1 loss 1.7900
+07:10:21 [study] step 1150/1414 epoch 1 loss 1.7940
+07:10:45 [study] step 1200/1414 epoch 1 loss 1.8062
+07:11:10 [study] step 1250/1414 epoch 1 loss 1.7962
+07:11:35 [study] step 1300/1414 epoch 1 loss 1.7889
+07:12:00 [study] step 1350/1414 epoch 1 loss 1.7781
+07:12:24 [study] step 1400/1414 epoch 1 loss 1.7676
+07:12:44 [study] epoch 1 done: acc/bomb=0.999, acc/danger=0.987, acc/focus=0.879, acc/move=0.622, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.800, f1/shoot=1.000, nll/total=1.524
+07:12:59 System 1 intent following: {'null/p_bomb': 1.2921650668810495e-05, 'null/focus_rate': 0.12604166666666666, 'null/x': 0.4228432416915894, 'bomb_now/p_bomb': 0.00010623366024447023, 'bomb_now/focus_rate': 0.14895833333333333, 'bomb_now/x': 0.5465593457221984, 'focus_on/p_bomb': 1.4623456607409935e-05, 'focus_on/focus_rate': 0.16875, 'focus_on/x': 0.5189804852008819, 'focus_off/p_bomb': 1.7596183579371427e-05, 'focus_off/focus_rate': 0.06041666666666667, 'focus_off/x': 0.4848727583885193, 'zone_bottom_left/p_bomb': 7.495456571859904e-06, 'zone_bottom_left/focus_rate': 0.10104166666666667, 'zone_bottom_left/x': 0.3241047739982605, 'zone_bottom_right/p_bomb': 1.0972994675739756e-05, 'zone_bottom_right/focus_rate': 0.10625, 'zone_bottom_right/x': 0.5481117367744446}
+07:13:24 S1 alone (null intent): {'episodes': 32.0, 'episode_return': -0.37392192985862494, 'episode_return_se': 0.1628189269173162, 'episode_length': 324.875, 'episode_length_se': 13.903668435623093, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 3960.78125, 'episode_score_se': 367.83388863148, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.0625, 'episode_bombs_se': 0.04347552147751577}
+07:14:07 System 2 samples: 8944 train / 360 val
+07:22:51 [system2-sl] epoch 0 loss=0.216, elapsed_s=514.914, val/parse_rate=1.000, val/exact=0.469, val/slot_acc/zone=0.727, val/slot_acc/focus=0.688, val/slot_acc/bomb=1.000
+07:31:04 [system2-sl] epoch 1 loss=0.011, elapsed_s=1008.147, val/parse_rate=1.000, val/exact=0.492, val/slot_acc/zone=0.727, val/slot_acc/focus=0.711, val/slot_acc/bomb=1.000
+07:31:21 S2 SL plan accuracy: {'parse_rate': 1.0, 'exact': 0.48828125, 'slot_acc/zone': 0.71875, 'slot_acc/focus': 0.71484375, 'slot_acc/bomb': 0.9921875}
+07:33:28 S1 + S2 (SL): {'episodes': 32.0, 'episode_return': -0.3036406799510587, 'episode_return_se': 0.14652329898391553, 'episode_length': 331.25, 'episode_length_se': 11.323772453588298, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 4213.59375, 'episode_score_se': 525.999396041323, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.125, 'episode_bombs_se': 0.059398870413936426, 'invalid_plan_rate': 0.0}
+07:33:33 [system2-grpo] step 0: return_mean=0.287, return_spread=0.027, kl=0.000, invalid=0.031, seconds=5.378
+07:34:42 [system2-grpo] step 10: return_mean=0.055, return_spread=0.065, kl=0.004, invalid=0.000, seconds=7.525
+07:35:52 [system2-grpo] step 20: return_mean=-0.398, return_spread=0.587, kl=0.031, invalid=0.062, seconds=7.538
+07:37:18 [system2-grpo] step 30: return_mean=-0.047, return_spread=0.176, kl=0.004, invalid=0.000, seconds=7.552
+07:38:39 [system2-grpo] step 40: return_mean=-0.070, return_spread=0.237, kl=0.000, invalid=0.000, seconds=6.546
+07:39:47 [system2-grpo] step 50: return_mean=-0.504, return_spread=0.177, kl=0.004, invalid=0.000, seconds=6.747
+07:40:55 [system2-grpo] step 60: return_mean=-0.513, return_spread=0.366, kl=0.019, invalid=0.000, seconds=6.677
+07:42:04 [system2-grpo] step 70: return_mean=-0.128, return_spread=0.304, kl=0.001, invalid=0.000, seconds=6.690
+07:43:10 [system2-grpo] step 80: return_mean=-0.594, return_spread=0.263, kl=0.063, invalid=0.031, seconds=7.034
+07:44:26 [system2-grpo] step 90: return_mean=-0.294, return_spread=0.443, kl=0.323, invalid=0.250, seconds=6.755
+07:45:34 [system2-grpo] step 100: return_mean=0.075, return_spread=0.215, kl=0.347, invalid=0.125, seconds=7.308
+07:46:49 [system2-grpo] step 110: return_mean=-0.210, return_spread=0.270, kl=0.134, invalid=0.000, seconds=7.471
+07:48:04 [system2-grpo] step 120: return_mean=-0.068, return_spread=0.165, kl=0.189, invalid=0.000, seconds=7.900
+07:49:20 [system2-grpo] step 130: return_mean=0.185, return_spread=0.256, kl=0.076, invalid=0.031, seconds=7.493
+07:50:33 [system2-grpo] step 140: return_mean=0.118, return_spread=0.252, kl=0.017, invalid=0.000, seconds=6.646
+07:51:36 [system2-grpo] step 149: return_mean=0.033, return_spread=0.068, kl=0.100, invalid=0.000, seconds=8.264
+07:54:12 S1 + S2 (GRPO): {'episodes': 32.0, 'episode_return': -0.02325006274622865, 'episode_return_se': 0.22968083251145116, 'episode_length': 349.625, 'episode_length_se': 18.128725979647914, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 5555.0, 'episode_score_se': 791.8033342701268, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.25, 'episode_bombs_se': 0.10040241611281235, 'invalid_plan_rate': 0.0}

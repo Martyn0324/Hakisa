@@ -211,11 +211,15 @@ def write_report(results: dict, out: Path) -> None:
         row(f"+ Play & teach (DAgger round {d['round'] + 1}, greedy)", d.get("play_greedy"))
     row("BC + Consolidation / RL (sampled)", results.get("rl", {}).get("play_sampled"))
     row("BC + Consolidation / RL (greedy)", results.get("rl", {}).get("play_greedy"))
+    row("BC + Consolidation / RL (temperature 0.5)", results.get("rl", {}).get("play_t05"))
     s = results.get("setup", {})
     md = [
         f"# {s.get('game')} — difficulty {s.get('difficulty')}",
         "",
         f"Evaluation: {s.get('eval_episodes')} full episodes per agent, fixed seeds, ±95% CI. Survival is in seconds (20 ticks/s, max 90 s).",
+        (f"RL was stopped early at {results['rl'].get('env_steps')} environment steps (iteration "
+         f"{results['rl'].get('checkpoint_iteration')}) because of the CPU budget; the last saved checkpoint is evaluated."
+         if results.get("rl", {}).get("stopped_early") else ""),
         "",
         "| Agent | Return | Deaths / episode | Survival (s) | Score | Stage clear | Bombs |",
         "|---|---|---|---|---|---|---|",
