@@ -205,3 +205,8 @@ Two pitfalls surfaced by the first DanmakuDojo run, both relevant to the real ga
    demonstrations never show recovery from the clone's own mistakes. Fix: a **"play & teach" stage** —
    DAgger in the simulator (the expert labels the states the learner visits) and, on real games, the F8
    human takeover (HG-DAgger), before RL consolidation.
+3. **System 1 must be able to *hear* System 2.** The first System 2 run showed no gain; the cause was not
+   the planner but System 1 ignoring intents (bomb probability 0.0 under "bomb=now"). A controlled test
+   (labels that depend only on the intent) showed the intent pathway learning ~100× too slowly with
+   transformer-style 0.02-std embeddings; unit-scale embeddings fix it (P(focus|on)=0.996 vs 0.004 after 150
+   steps). The System 2 report now includes an intent-following check before any play comparison.
