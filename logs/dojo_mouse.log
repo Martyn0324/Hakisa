@@ -1,0 +1,39 @@
+04:14:20 [dojo-demos] 16000/100000 frames, 0 finished episodes
+04:14:37 [dojo-demos] 32000/100000 frames, 0 finished episodes
+04:14:54 [dojo-demos] 48000/100000 frames, 0 finished episodes
+04:15:09 [dojo-demos] 64000/100000 frames, 32 finished episodes
+04:15:26 [dojo-demos] 80000/100000 frames, 32 finished episodes
+04:15:42 [dojo-demos] 96000/100000 frames, 33 finished episodes
+04:15:51 random: {'episodes': 32.0, 'episode_return': -1.1312812907854095, 'episode_return_se': 0.146572089561088, 'episode_length': 265.09375, 'episode_length_se': 10.492351224763222, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 5834.0625, 'episode_score_se': 915.3376513631591, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 1.21875, 'episode_bombs_se': 0.18908936592640951}
+04:16:44 demonstrator: {'episodes': 32.0, 'episode_return': 18.850609153334517, 'episode_return_se': 0.36650311602009894, 'episode_length': 1776.46875, 'episode_length_se': 15.143133249992093, 'episode_deaths': 0.6875, 'episode_deaths_se': 0.17061026611322602, 'episode_score': 19547.03125, 'episode_score_se': 871.2512975928402, 'episode_clear': 0.03125, 'episode_clear_se': 0.03125, 'episode_bombs': 0.5, 'episode_bombs_se': 0.1270001270001905}
+04:16:44 BC data: 90625 train / 9375 val frames from 65 episodes
+04:17:10 [study] step 50/3540 epoch 0 loss 11.8938
+04:17:36 [study] step 100/3540 epoch 0 loss 10.5807
+04:18:00 [study] step 150/3540 epoch 0 loss 8.3373
+04:18:25 [study] step 200/3540 epoch 0 loss 6.4060
+04:18:54 [study] step 250/3540 epoch 0 loss 5.4316
+04:19:32 [study] step 300/3540 epoch 0 loss 4.9161
+04:20:10 [study] step 350/3540 epoch 0 loss 4.6980
+04:20:47 [study] step 400/3540 epoch 0 loss 4.5813
+04:21:26 [study] step 450/3540 epoch 0 loss 4.4652
+04:21:59 [study] step 500/3540 epoch 0 loss 4.4181
+04:22:34 [study] step 550/3540 epoch 0 loss 4.3439
+04:23:12 [study] step 600/3540 epoch 0 loss 4.2597
+04:23:51 [study] step 650/3540 epoch 0 loss 4.2707
+04:24:29 [study] step 700/3540 epoch 0 loss 4.2075
+04:24:54 [study] epoch 0 done: acc/bomb=1.000, acc/danger=0.983, acc/fire=1.000, acc/slow=0.764, acc2/pointer=0.228, err/pointer=10.718, f1/bomb=0.000, f1/fire=1.000, f1/slow=0.210, nll/total=10.475
+04:25:26 [study] step 750/3540 epoch 1 loss 4.1732
+04:26:04 [study] step 800/3540 epoch 1 loss 4.1192
+04:26:40 [study] step 850/3540 epoch 1 loss 4.1494
+04:27:17 [study] step 900/3540 epoch 1 loss 4.0964
+04:27:54 [study] step 950/3540 epoch 1 loss 4.0248
+04:28:31 [study] step 1000/3540 epoch 1 loss 4.0397
+04:29:07 [study] step 1050/3540 epoch 1 loss 3.9942
+04:29:38 [study] step 1100/3540 epoch 1 loss 3.9460
+04:30:03 [study] step 1150/3540 epoch 1 loss 3.9254
+04:30:28 [study] step 1200/3540 epoch 1 loss 3.8994
+04:30:53 [study] step 1250/3540 epoch 1 loss 3.8909
+04:31:17 [study] step 1300/3540 epoch 1 loss 3.8613
+04:31:42 [study] step 1350/3540 epoch 1 loss 3.8559
+04:32:09 [study] step 1400/3540 epoch 1 loss 3.8600
+04:32:33 [study] epoch 1 done: acc/bomb=1.000, acc/danger=0.983, acc/fire=1.000, acc/slow=0.180, acc2/pointer=0.471, err/pointer=3.973, f1/bomb=0.000, f1/fire=1.000, f1/slow=0.305, nll/total=7.401

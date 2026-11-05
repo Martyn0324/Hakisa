@@ -36,7 +36,7 @@ class StudyConfig:
     weight_decay: float = 0.05
     warmup_frac: float = 0.05
     label_smoothing: float = 0.05
-    class_weight_power: float = 0.5
+    class_weight_power: float = 0.0  # >0 boosts rare classes but miscalibrates sampling (bombs!)
     danger_weight: float = 0.5
     ema_decay: float = 0.999
     grad_clip: float = 1.0
@@ -193,7 +193,7 @@ def train_bc(
         pin_memory=device.type == "cuda",
         persistent_workers=cfg.num_workers > 0,
     )
-    class_weights = compute_class_weights(train_ds, cfg.class_weight_power)
+    class_weights = compute_class_weights(train_ds, cfg.class_weight_power) if cfg.class_weight_power > 0 else None
     opt = torch.optim.AdamW(param_groups(policy, cfg.weight_decay), lr=cfg.lr, betas=(0.9, 0.99))
     steps_per_epoch = max(len(loader), 1)
     total = cfg.max_steps or cfg.epochs * steps_per_epoch

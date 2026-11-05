@@ -64,4 +64,5 @@ class LoLReward:
             r += w["win"] if str(stats.result).lower().startswith("win") else w["lose"]
         info["deaths"] = max(0.0, d("deaths"))
         info["kills"] = max(0.0, d("kills"))
+        info["life_lost"] = info["deaths"] > 0
         return float(r), info

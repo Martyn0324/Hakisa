@@ -95,6 +95,8 @@ class VisualEncoder(nn.Module):
         x = self.normalize(x)
         if self.coord:
             x = torch.cat([x, coord_channels(x.shape[0], x.shape[2], x.shape[3], x.device, x.dtype)], dim=1)
+        if getattr(self, "channels_last", False):  # faster convolutions on CPUs with oneDNN
+            x = x.contiguous(memory_format=torch.channels_last)
         x = self.stem(x)
         s1 = self.stage1(x)
         s2 = self.stage2(s1)

@@ -46,7 +46,7 @@ model:
 
 training:
   bc: {epochs: 6, batch_size: 128, lr: 0.001, weight_decay: 0.05, label_smoothing: 0.05, flip: true}
-  rl: {rollout_steps: 128, num_envs: 16, epochs: 3, minibatch_size: 512, lr: 0.0002, gamma: 0.99, gae_lambda: 0.95,
+  rl: {rollout_steps: 128, num_envs: 16, epochs: 2, minibatch_size: 512, lr: 0.0002, gamma: 0.99, gae_lambda: 0.95, demo_batch: 64,
        kl_coef: 0.03, demo_coef: 0.05, critic_warmup_iters: 10, update_mode: sync}
 
 intents:

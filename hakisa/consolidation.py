@@ -32,6 +32,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
+from hakisa.basal_ganglia.heads import PointerLogits, PolicyOutput
 from hakisa.hippocampus.dataset import BCDataset, worker_seed_init
 from hakisa.models.games import save_policy
 from hakisa.models.policy import HakisaPolicy
@@ -135,6 +136,13 @@ def _flat(x: torch.Tensor) -> torch.Tensor:
     return x.reshape(x.shape[0] * x.shape[1], *x.shape[2:])
 
 
+def split_obs(obs) -> tuple[np.ndarray, np.ndarray | None, np.ndarray | None]:
+    """Environments return either the image stack or ``{"obs": ..., "aux": ..., "minimap": ...}``."""
+    if isinstance(obs, dict):
+        return obs["obs"], obs.get("aux"), obs.get("minimap")
+    return obs, None, None
+
+
 class PPOTrainer:
     def __init__(
         self,
@@ -180,22 +188,32 @@ class PPOTrainer:
 
     # -- collection (vectorised simulator) --------------------------------------------------------
     @torch.no_grad()
-    def collect(self, env, obs: np.ndarray, steps: int, episode_cb: Callable[[dict], None] | None = None) -> tuple[Rollout, np.ndarray]:
+    def collect(self, env, obs, steps: int, episode_cb: Callable[[dict], None] | None = None) -> tuple[Rollout, Any]:
+        """``obs`` is an array (N, C, H, W) or a dict with ``obs`` / ``aux`` / ``minimap`` arrays."""
         self.policy.eval()
-        n = obs.shape[0]
+        o0, a0, m0 = split_obs(obs)
+        n = o0.shape[0]
         if self.scaler is None or len(self.scaler.ret) != n:
             self.scaler = RewardScaler(n, self.cfg.gamma)
         warm = self.iteration < self.cfg.critic_warmup_iters
         actor = self.ref if warm else self.policy
-        buf_obs = torch.empty((steps, *obs.shape), dtype=torch.uint8)
+        buf_obs = torch.empty((steps, *o0.shape), dtype=torch.uint8)
+        buf_aux = torch.empty((steps, *a0.shape), dtype=torch.float32) if a0 is not None else None
+        buf_mm = torch.empty((steps, *m0.shape), dtype=torch.uint8) if m0 is not None else None
         acts: dict[str, list[torch.Tensor]] = {}
         logp, values, rewards, dones = (torch.empty(steps, n) for _ in range(4))
         for t in range(steps):
-            o = torch.from_numpy(obs)
+            o, aux, mm = (torch.from_numpy(x) if x is not None else None for x in split_obs(obs))
             buf_obs[t] = o
-            a, lp, v, _ = actor.act(o.to(self.device))
+            if buf_aux is not None:
+                buf_aux[t] = aux
+            if buf_mm is not None:
+                buf_mm[t] = mm
+            dev_aux = aux.to(self.device) if aux is not None else None
+            dev_mm = mm.to(self.device) if mm is not None else None
+            a, lp, v, _ = actor.act(o.to(self.device), dev_aux, dev_mm)
             if warm:  # value from the critic being trained, actions from the frozen BC policy
-                v = self._value(o)
+                v = self._value(o, dev_aux, dev_mm)
             np_a = {k: x.cpu().numpy() for k, x in a.items()}
             obs, r, term, trunc, info = env.step(np_a)
             done = term | trunc
@@ -207,14 +225,52 @@ class PPOTrainer:
             if episode_cb is not None and done.any():
                 for i in np.nonzero(done)[0]:
                     episode_cb({k: (v[i].item() if hasattr(v[i], "item") else v[i]) for k, v in info.items() if k.startswith("episode_")})
-        last_value = self._value(torch.from_numpy(obs))
-        roll = Rollout(buf_obs, {k: torch.stack(v) for k, v in acts.items()}, logp, values, rewards, dones, last_value)
+        o, aux, mm = (torch.from_numpy(x) if x is not None else None for x in split_obs(obs))
+        last_value = self._value(o, aux, mm)
+        roll = Rollout(buf_obs, {k: torch.stack(v) for k, v in acts.items()}, logp, values, rewards, dones, last_value,
+                       aux=buf_aux, minimap=buf_mm)
         return roll, obs
 
     @torch.no_grad()
     def _value(self, obs: torch.Tensor, aux=None, minimap=None, intent=None) -> torch.Tensor:
-        feats = self.policy.features(obs.to(self.device), aux, minimap, intent)
+        dev = self.device
+        feats = self.policy.features(
+            obs.to(dev), aux.to(dev) if aux is not None else None, minimap.to(dev) if minimap is not None else None, intent
+        )
         return self.policy.value_head(feats.trunk)[:, 0].cpu()
+
+    # -- reference (frozen BC) outputs: computed once per rollout, reused by every epoch -------------
+    @torch.no_grad()
+    def _reference_outputs(self, b_obs, b_act, b_aux, b_mm, b_int, chunk: int = 512) -> dict[str, dict[str, torch.Tensor]]:
+        logits: dict[str, list[torch.Tensor]] = {}
+        cells: dict[str, list[torch.Tensor]] = {}
+        offs: dict[str, list[torch.Tensor]] = {}
+        dev = self.device
+        for s in range(0, b_obs.shape[0], chunk):
+            sl = slice(s, s + chunk)
+            out = self.ref(
+                b_obs[sl].to(dev),
+                b_aux[sl].to(dev) if b_aux is not None else None,
+                b_mm[sl].to(dev) if b_mm is not None else None,
+                b_int[sl].to(dev) if b_int is not None else None,
+                condition={k: v[sl].to(dev) for k, v in b_act.items()},
+            )
+            for k, v in out.logits.items():
+                logits.setdefault(k, []).append(v.cpu())
+            for k, p in out.pointer.items():
+                cells.setdefault(k, []).append(p.cell.cpu())
+                offs.setdefault(k, []).append(p.offset.cpu())
+        return {
+            "logits": {k: torch.cat(v) for k, v in logits.items()},
+            "cell": {k: torch.cat(v) for k, v in cells.items()},
+            "offset": {k: torch.cat(v) for k, v in offs.items()},
+        }
+
+    def _slice_reference(self, cache: dict, idx: torch.Tensor, dev) -> PolicyOutput:
+        out = PolicyOutput(logits={k: v[idx].to(dev) for k, v in cache["logits"].items()})
+        for p in self.policy.space.pointer_heads:
+            out.pointer[p.name] = PointerLogits(cache["cell"][p.name][idx].to(dev), cache["offset"][p.name][idx].to(dev), p.grid, p.sub)
+        return out
 
     # -- update -----------------------------------------------------------------------------------
     def update(self, roll: Rollout) -> dict[str, float]:
@@ -237,6 +293,7 @@ class PPOTrainer:
         self.policy.train()
         dev = self.device
         stop = False
+        ref_cache = None if warm else self._reference_outputs(b_obs, b_act, b_aux, b_mm, b_int)
         for _ in range(cfg.epochs):
             perm = torch.randperm(total)
             for start in range(0, total, mb):
@@ -256,7 +313,7 @@ class PPOTrainer:
                     v_loss.backward()
                     torch.nn.utils.clip_grad_norm_(self.policy.value_head.parameters(), cfg.max_grad_norm)
                     self.value_opt.step()
-                    stats.setdefault("v_loss", []).append(float(v_loss))
+                    stats.setdefault("v_loss", []).append(float(v_loss.detach()))
                     continue
                 logp, ent, v, dist = self.policy.evaluate_actions(obs, actions, aux, mm, it)
                 adv_mb = b_adv[idx].to(dev)
@@ -265,9 +322,8 @@ class PPOTrainer:
                 ratio = log_ratio.exp()
                 pg = torch.max(-adv_mb * ratio, -adv_mb * ratio.clamp(1 - cfg.clip, 1 + cfg.clip)).mean()
                 v_loss = 0.5 * F.mse_loss(v, ret_mb)
-                with torch.no_grad():
-                    ref_out = self.ref(obs, aux, mm, it, condition=actions)
-                ref_dist = self.ref.distribution(ref_out)
+                assert ref_cache is not None
+                ref_dist = self.ref.distribution(self._slice_reference(ref_cache, idx, dev))
                 kl_ref = dist.kl(ref_dist, actions).mean()
                 loss = pg + cfg.vf_coef * v_loss - cfg.ent_coef * ent.mean() + self.kl_coef * kl_ref
                 demo = self._demo_batch()
@@ -277,7 +333,7 @@ class PPOTrainer:
                     d_losses = self.policy.distribution(out).bc_losses(demo["labels"])
                     d_loss = sum(d_losses.values())
                     loss = loss + self.demo_coef * d_loss
-                    stats.setdefault("demo_loss", []).append(float(d_loss))
+                    stats.setdefault("demo_loss", []).append(float(d_loss.detach()))
                 self.opt.zero_grad(set_to_none=True)
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(self.policy.parameters(), cfg.max_grad_norm)
@@ -286,7 +342,7 @@ class PPOTrainer:
                     approx_kl = ((ratio - 1) - log_ratio).mean()
                 for k, x in (("pg_loss", pg), ("v_loss", v_loss), ("entropy", ent.mean()), ("kl_ref", kl_ref),
                              ("approx_kl", approx_kl), ("clipfrac", ((ratio - 1).abs() > cfg.clip).float().mean())):
-                    stats.setdefault(k, []).append(float(x))
+                    stats.setdefault(k, []).append(float(x.detach()))
                 if cfg.target_kl is not None and float(approx_kl) > 1.5 * cfg.target_kl:
                     stop = True
                     break
@@ -367,23 +423,33 @@ class AsyncActorLearner:
             self.actor.load_state_dict(self.trainer.policy.state_dict())
 
     def _actor_loop(self, steps: int) -> None:
+        try:
+            self._actor_loop_inner(steps)
+        except BaseException as exc:  # e.g. the kill switch: stop the learner too
+            self.error = exc
+            self.stop_event.set()
+            self.rollouts.put(None)
+
+    def _actor_loop_inner(self, steps: int) -> None:
         dev = self.trainer.device
         obs, _ = self.env.reset()
-        scaler = RewardScaler(obs.shape[0], self.trainer.cfg.gamma)
+        scaler = RewardScaler(split_obs(obs)[0].shape[0], self.trainer.cfg.gamma)
         while not self.stop_event.is_set():
-            buf: dict[str, list] = {"obs": [], "logp": [], "values": [], "rewards": [], "dones": []}
+            buf: dict[str, list] = {"obs": [], "aux": [], "mm": [], "logp": [], "values": [], "rewards": [], "dones": []}
             acts: dict[str, list] = {}
             for _ in range(steps):
                 if self.stop_event.is_set():
                     return
-                o = torch.from_numpy(obs)
+                o, aux, mm = (torch.from_numpy(x) if x is not None else None for x in split_obs(obs))
                 with self.lock, torch.no_grad():
                     warm = self.trainer.iteration < self.trainer.cfg.critic_warmup_iters
                     pol = self.trainer.ref if warm else self.actor
-                    a, lp, v, _ = pol.act(o.to(dev))
+                    a, lp, v, _ = pol.act(o.to(dev), aux.to(dev) if aux is not None else None, mm.to(dev) if mm is not None else None)
                 obs, r, term, trunc, info = self.env.step({k: x.cpu().numpy() for k, x in a.items()})
                 done = term | trunc
                 buf["obs"].append(o)
+                buf["aux"].append(aux)
+                buf["mm"].append(mm)
                 buf["logp"].append(lp.cpu())
                 buf["values"].append(v.cpu())
                 buf["rewards"].append(torch.from_numpy(scaler(r, done)).float())
@@ -392,11 +458,14 @@ class AsyncActorLearner:
                     acts.setdefault(k, []).append(x.cpu())
                 if done.any():
                     self.episodes.append({k: v for k, v in info.items() if k.startswith("episode_")})
+            o, aux, mm = (torch.from_numpy(x) if x is not None else None for x in split_obs(obs))
             with self.lock, torch.no_grad():
-                last_v = self.trainer._value(torch.from_numpy(obs))
+                last_v = self.trainer._value(o, aux, mm)
             roll = Rollout(
                 torch.stack(buf["obs"]), {k: torch.stack(v) for k, v in acts.items()}, torch.stack(buf["logp"]),
                 torch.stack(buf["values"]), torch.stack(buf["rewards"]), torch.stack(buf["dones"]), last_v,
+                aux=torch.stack(buf["aux"]) if buf["aux"][0] is not None else None,
+                minimap=torch.stack(buf["mm"]) if buf["mm"][0] is not None else None,
             )
             self.rollouts.put(roll)
 
@@ -407,9 +476,12 @@ class AsyncActorLearner:
         history = []
         actor = threading.Thread(target=self._actor_loop, args=(trainer.cfg.rollout_steps,), daemon=True)
         actor.start()
+        self.error: BaseException | None = None
         try:
             for _ in range(iterations):
                 roll = self.rollouts.get()
+                if roll is None:  # the actor stopped (kill switch or error)
+                    break
                 if mode == "pause" and self.pause_fn:
                     self.pause_fn()
                 with self.lock:
@@ -448,7 +520,8 @@ def evaluate_policy(
         if actor is not None:
             a = actor(obs)
         else:
-            act, *_ = policy.act(torch.from_numpy(obs).to(device), deterministic=deterministic)
+            o, aux, mm = (torch.from_numpy(x).to(device) if x is not None else None for x in split_obs(obs))
+            act, *_ = policy.act(o, aux, mm, deterministic=deterministic)
             a = {k: v.cpu().numpy() for k, v in act.items()}
         obs, r, term, trunc, info = env.step(a)
         for i in np.nonzero(term | trunc)[0]:
