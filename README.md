@@ -46,8 +46,13 @@ Training ladder (the same for every game):
 
 1. **Record** your own play (`hakisa record`) — frames + inputs + HUD values, no manual labels.
 2. **Study** (`hakisa train-bc`) — behaviour cloning: each frame is *classified* into what you did.
-3. **Play & teach** (`hakisa play`) — F8 takes over; your corrections are recorded (HG-DAgger).
-4. **Consolidation** (`hakisa train-rl`) — PPO with a KL anchor to the studied policy, rewards from the HUD.
+   Two lessons from the simulator are built in: rare "tap" commands (bombs) are never label-smoothed, and
+   the *copycat* problem (held keys make "repeat the visible motion" a shortcut) is countered with
+   history dropout and keyframe oversampling.
+3. **Play & teach** (`hakisa play`) — F8 takes over; your corrections are recorded exactly where Hakisa
+   fails (HG-DAgger) and go into the next Study run. In the simulator this is DAgger.
+4. **Consolidation** (`hakisa train-rl`) — PPO with a (decaying) KL anchor to the studied policy, critic
+   warm-up and demo replay; rewards from the HUD.
 5. **System 2** (`scripts/s2_experiment.py` / Colab notebook) — Qwen3 planner trained on hindsight plans, then GRPO.
 
 Design spec with the 2025–2026 research it builds on:

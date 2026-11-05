@@ -1,3 +1,4 @@
 05:03:19 BC data: 89255 train / 10745 val frames from 64 episodes
 05:03:20 [study] keyframes (action changes): 23.5% of ticks, boosted x3
 05:03:58 [study] step 50/3485 epoch 0 loss 4.8844
+05:04:22 [study] step 100/3485 epoch 0 loss 3.6736
