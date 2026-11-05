@@ -3,8 +3,8 @@
     "game": "dojo_keyboard",
     "difficulty": 2.0,
     "demo_steps": 100000,
-    "bc_epochs": 6,
-    "rl_steps": 700000,
+    "bc_epochs": 5,
+    "rl_steps": 600000,
     "eval_episodes": 32,
     "eval_seed": 777,
     "device": "cpu",
@@ -48,75 +48,75 @@
     }
   },
   "bc": {
-    "train_seconds": 1943.495038509369,
+    "train_seconds": 1702.3201234340668,
     "params": 200286,
     "val": {
-      "nll/move": 1.3203129657871393,
-      "acc/move": 0.5756165658445789,
-      "nll/focus": 0.35423651935334205,
-      "acc/focus": 0.8772452303396929,
-      "nll/shoot": 0.03279258069907748,
+      "nll/move": 1.527156791846771,
+      "acc/move": 0.445881805490926,
+      "nll/focus": 0.39877244923601823,
+      "acc/focus": 0.8604001861330851,
+      "nll/shoot": 0.03179365391507155,
       "acc/shoot": 1.0,
-      "nll/bomb": 0.03595173271271505,
+      "nll/bomb": 0.004130047255769032,
       "acc/bomb": 0.9993485342019544,
       "acc/danger": 0.9888320148906468,
-      "f1/focus": 0.8009056603773584,
+      "f1/focus": 0.7533706017757317,
       "f1/shoot": 1.0,
       "f1/bomb": 0.0,
-      "nll/total": 1.7432937985522738
+      "nll/total": 1.9618529422536297
     },
     "epochs": [
       {
         "epoch": 0,
-        "elapsed_s": 393.8744287490845,
-        "val/nll/total": 3.3756698118469894
+        "elapsed_s": 320.87544345855713,
+        "val/nll/total": 3.3521988302011607
       },
       {
         "epoch": 1,
-        "elapsed_s": 858.0101418495178,
-        "val/nll/total": 2.929752556298044
+        "elapsed_s": 666.3444736003876,
+        "val/nll/total": 2.9180227430768766
       },
       {
         "epoch": 2,
-        "elapsed_s": 1199.0276372432709,
-        "val/nll/total": 2.220722518315588
+        "elapsed_s": 1028.859406709671,
+        "val/nll/total": 2.4966083106733494
       },
       {
         "epoch": 3,
-        "elapsed_s": 1559.8590314388275,
-        "val/nll/total": 1.9368621530617154
+        "elapsed_s": 1376.111396074295,
+        "val/nll/total": 2.09593453032492
       },
       {
         "epoch": 4,
-        "elapsed_s": 1942.458701133728,
-        "val/nll/total": 1.7432937985522738
+        "elapsed_s": 1701.0463342666626,
+        "val/nll/total": 1.9618529422536297
       }
     ],
     "play_sampled": {
       "episodes": 32.0,
-      "episode_return": 3.317703005624935,
-      "episode_return_se": 0.21614701501522587,
-      "episode_length": 636.1875,
-      "episode_length_se": 17.45873230418964,
+      "episode_return": -0.1419844449555967,
+      "episode_return_se": 0.13128456990428294,
+      "episode_length": 344.65625,
+      "episode_length_se": 10.711635346875633,
       "episode_deaths": 3.0,
       "episode_deaths_se": 0.0,
-      "episode_score": 25777.03125,
-      "episode_score_se": 952.5489430364133,
+      "episode_score": 4302.03125,
+      "episode_score_se": 411.5749561440171,
       "episode_clear": 0.0,
       "episode_clear_se": 0.0,
-      "episode_bombs": 5.40625,
-      "episode_bombs_se": 0.17308500032847926
+      "episode_bombs": 0.0625,
+      "episode_bombs_se": 0.04347552147751577
     },
     "play_greedy": {
       "episodes": 32.0,
-      "episode_return": -1.2709688189788722,
-      "episode_return_se": 0.050202482175559886,
-      "episode_length": 262.09375,
-      "episode_length_se": 4.742217600677706,
+      "episode_return": 0.2424374424153939,
+      "episode_return_se": 0.11152734977543542,
+      "episode_length": 378.125,
+      "episode_length_se": 10.392571594886354,
       "episode_deaths": 3.0,
       "episode_deaths_se": 0.0,
-      "episode_score": 1080.9375,
-      "episode_score_se": 152.2547998177408,
+      "episode_score": 4611.875,
+      "episode_score_se": 163.87073085652486,
       "episode_clear": 0.0,
       "episode_clear_se": 0.0,
       "episode_bombs": 0.0,
@@ -126,33 +126,68 @@
   "dagger": [
     {
       "round": 0,
-      "train_frames": 126128,
-      "seconds": 483.0285551548004,
+      "train_frames": 128877,
+      "seconds": 489.87935972213745,
       "play_sampled": {
         "episodes": 32.0,
-        "episode_return": -0.3957969417970162,
-        "episode_return_se": 0.1802310109477254,
-        "episode_length": 323.46875,
-        "episode_length_se": 14.4205962959318,
+        "episode_return": 0.08590619423193857,
+        "episode_return_se": 0.1835577741439319,
+        "episode_length": 361.6875,
+        "episode_length_se": 14.720339060512552,
         "episode_deaths": 3.0,
         "episode_deaths_se": 0.0,
-        "episode_score": 5945.15625,
-        "episode_score_se": 890.0443561225898,
+        "episode_score": 5440.3125,
+        "episode_score_se": 592.9198329465892,
         "episode_clear": 0.0,
         "episode_clear_se": 0.0,
-        "episode_bombs": 0.75,
-        "episode_bombs_se": 0.17960530202677488
+        "episode_bombs": 0.25,
+        "episode_bombs_se": 0.07777137710478188
       },
       "play_greedy": {
         "episodes": 32.0,
-        "episode_return": -1.3633438036195002,
-        "episode_return_se": 0.0523782298160313,
-        "episode_length": 252.5,
-        "episode_length_se": 4.960732906309503,
+        "episode_return": 0.5058124361094087,
+        "episode_return_se": 0.20415328527280552,
+        "episode_length": 409.875,
+        "episode_length_se": 19.089652132723295,
         "episode_deaths": 3.0,
         "episode_deaths_se": 0.0,
-        "episode_score": 1116.5625,
-        "episode_score_se": 154.52881645805553,
+        "episode_score": 4070.625,
+        "episode_score_se": 243.69713549979707,
+        "episode_clear": 0.0,
+        "episode_clear_se": 0.0,
+        "episode_bombs": 0.0,
+        "episode_bombs_se": 0.0
+      }
+    },
+    {
+      "round": 1,
+      "train_frames": 163655,
+      "seconds": 568.1016013622284,
+      "play_sampled": {
+        "episodes": 32.0,
+        "episode_return": 0.9119999417744111,
+        "episode_return_se": 0.2718625776170359,
+        "episode_length": 421.59375,
+        "episode_length_se": 21.08249251572032,
+        "episode_deaths": 3.0,
+        "episode_deaths_se": 0.0,
+        "episode_score": 8929.375,
+        "episode_score_se": 1053.4362156215554,
+        "episode_clear": 0.0,
+        "episode_clear_se": 0.0,
+        "episode_bombs": 0.65625,
+        "episode_bombs_se": 0.1391895826538568
+      },
+      "play_greedy": {
+        "episodes": 32.0,
+        "episode_return": 0.5612499370181467,
+        "episode_return_se": 0.1548109530797727,
+        "episode_length": 408.9375,
+        "episode_length_se": 14.082342631534551,
+        "episode_deaths": 3.0,
+        "episode_deaths_se": 0.0,
+        "episode_score": 4718.75,
+        "episode_score_se": 257.94590268053764,
         "episode_clear": 0.0,
         "episode_clear_se": 0.0,
         "episode_bombs": 0.0,
@@ -160,5 +195,5 @@
       }
     }
   ],
-  "dagger_final": "runs/dojo_keyboard/dagger0/best.pt"
+  "dagger_final": "runs/dojo_keyboard/dagger1/best.pt"
 }

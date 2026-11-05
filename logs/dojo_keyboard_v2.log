@@ -34,3 +34,112 @@
 05:15:25 [study] step 1500/3485 epoch 2 loss 2.5498
 05:15:47 [study] step 1550/3485 epoch 2 loss 2.5323
 05:16:12 [study] step 1600/3485 epoch 2 loss 2.5094
+05:16:35 [study] step 1650/3485 epoch 2 loss 2.5070
+05:16:59 [study] step 1700/3485 epoch 2 loss 2.4952
+05:17:24 [study] step 1750/3485 epoch 2 loss 2.5062
+05:17:47 [study] step 1800/3485 epoch 2 loss 2.5200
+05:18:10 [study] step 1850/3485 epoch 2 loss 2.4892
+05:18:34 [study] step 1900/3485 epoch 2 loss 2.4772
+05:18:58 [study] step 1950/3485 epoch 2 loss 2.4662
+05:19:22 [study] step 2000/3485 epoch 2 loss 2.4650
+05:19:54 [study] step 2050/3485 epoch 2 loss 2.4614
+05:20:30 [study] epoch 2 done: acc/bomb=0.999, acc/danger=0.989, acc/focus=0.784, acc/move=0.291, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.612, f1/shoot=1.000, nll/total=2.497
+05:20:34 [study] step 2100/3485 epoch 3 loss 2.4622
+05:20:58 [study] step 2150/3485 epoch 3 loss 2.4564
+05:21:23 [study] step 2200/3485 epoch 3 loss 2.4456
+05:21:53 [study] step 2250/3485 epoch 3 loss 2.4464
+05:22:18 [study] step 2300/3485 epoch 3 loss 2.4508
+05:22:49 [study] step 2350/3485 epoch 3 loss 2.4440
+05:23:12 [study] step 2400/3485 epoch 3 loss 2.4294
+05:23:35 [study] step 2450/3485 epoch 3 loss 2.4209
+05:23:56 [study] step 2500/3485 epoch 3 loss 2.4262
+05:24:19 [study] step 2550/3485 epoch 3 loss 2.4281
+05:24:42 [study] step 2600/3485 epoch 3 loss 2.4322
+05:25:04 [study] step 2650/3485 epoch 3 loss 2.4256
+05:25:26 [study] step 2700/3485 epoch 3 loss 2.4057
+05:25:48 [study] step 2750/3485 epoch 3 loss 2.4102
+05:26:17 [study] epoch 3 done: acc/bomb=0.999, acc/danger=0.989, acc/focus=0.853, acc/move=0.408, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.737, f1/shoot=1.000, nll/total=2.096
+05:26:22 [study] step 2800/3485 epoch 4 loss 2.4026
+05:26:45 [study] step 2850/3485 epoch 4 loss 2.4171
+05:27:07 [study] step 2900/3485 epoch 4 loss 2.4129
+05:27:30 [study] step 2950/3485 epoch 4 loss 2.4141
+05:27:52 [study] step 3000/3485 epoch 4 loss 2.4032
+05:28:14 [study] step 3050/3485 epoch 4 loss 2.4048
+05:28:37 [study] step 3100/3485 epoch 4 loss 2.4001
+05:29:00 [study] step 3150/3485 epoch 4 loss 2.4107
+05:29:22 [study] step 3200/3485 epoch 4 loss 2.3867
+05:29:44 [study] step 3250/3485 epoch 4 loss 2.3815
+05:30:07 [study] step 3300/3485 epoch 4 loss 2.4012
+05:30:29 [study] step 3350/3485 epoch 4 loss 2.4127
+05:30:51 [study] step 3400/3485 epoch 4 loss 2.3969
+05:31:12 [study] step 3450/3485 epoch 4 loss 2.3892
+05:31:42 [study] epoch 4 done: acc/bomb=0.999, acc/danger=0.989, acc/focus=0.860, acc/move=0.446, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.753, f1/shoot=1.000, nll/total=1.962
+05:32:13 BC (sampled): {'episodes': 32.0, 'episode_return': -0.1419844449555967, 'episode_return_se': 0.13128456990428294, 'episode_length': 344.65625, 'episode_length_se': 10.711635346875633, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 4302.03125, 'episode_score_se': 411.5749561440171, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.0625, 'episode_bombs_se': 0.04347552147751577}
+05:32:29 BC (greedy): {'episodes': 32.0, 'episode_return': 0.2424374424153939, 'episode_return_se': 0.11152734977543542, 'episode_length': 378.125, 'episode_length_se': 10.392571594886354, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 4611.875, 'episode_score_se': 163.87073085652486, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.0, 'episode_bombs_se': 0.0}
+05:32:39 [dagger] 8000/40000 frames
+05:32:50 [dagger] 16000/40000 frames
+05:33:01 [dagger] 24000/40000 frames
+05:33:11 [dagger] 32000/40000 frames
+05:33:23 [dagger] 40000/40000 frames
+05:33:24 DAgger round 0: 128877 train frames
+05:33:25 [study] keyframes (action changes): 21.6% of ticks, boosted x3
+05:33:46 [study] step 50/1006 epoch 0 loss 2.5859
+05:34:07 [study] step 100/1006 epoch 0 loss 2.5638
+05:34:29 [study] step 150/1006 epoch 0 loss 2.5378
+05:34:48 [study] step 200/1006 epoch 0 loss 2.5284
+05:35:09 [study] step 250/1006 epoch 0 loss 2.5109
+05:35:29 [study] step 300/1006 epoch 0 loss 2.5031
+05:35:50 [study] step 350/1006 epoch 0 loss 2.4881
+05:36:11 [study] step 400/1006 epoch 0 loss 2.4972
+05:36:31 [study] step 450/1006 epoch 0 loss 2.5233
+05:36:52 [study] step 500/1006 epoch 0 loss 2.4874
+05:37:13 [study] step 550/1006 epoch 0 loss 2.4849
+05:37:34 [study] step 600/1006 epoch 0 loss 2.4875
+05:37:56 [study] step 650/1006 epoch 0 loss 2.4804
+05:38:17 [study] step 700/1006 epoch 0 loss 2.4772
+05:38:37 [study] step 750/1006 epoch 0 loss 2.4798
+05:38:59 [study] step 800/1006 epoch 0 loss 2.4691
+05:39:23 [study] step 850/1006 epoch 0 loss 2.4650
+05:39:42 [study] step 900/1006 epoch 0 loss 2.4570
+05:40:03 [study] step 950/1006 epoch 0 loss 2.4502
+05:40:24 [study] step 1000/1006 epoch 0 loss 2.4805
+05:40:39 [study] epoch 0 done: acc/bomb=0.998, acc/danger=0.944, acc/focus=0.860, acc/move=0.424, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.671, f1/shoot=1.000, nll/total=1.949
+05:41:15 DAgger round 0 (sampled): {'episodes': 32.0, 'episode_return': 0.08590619423193857, 'episode_return_se': 0.1835577741439319, 'episode_length': 361.6875, 'episode_length_se': 14.720339060512552, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 5440.3125, 'episode_score_se': 592.9198329465892, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.25, 'episode_bombs_se': 0.07777137710478188}
+05:41:24 [dagger] 8000/40000 frames
+05:41:35 [dagger] 16000/40000 frames
+05:41:46 [dagger] 24000/40000 frames
+05:41:57 [dagger] 32000/40000 frames
+05:42:07 [dagger] 40000/40000 frames
+05:42:09 DAgger round 1: 163655 train frames
+05:42:10 [study] keyframes (action changes): 20.5% of ticks, boosted x3
+05:42:29 [study] step 50/1278 epoch 0 loss 2.5431
+05:42:48 [study] step 100/1278 epoch 0 loss 2.5370
+05:43:07 [study] step 150/1278 epoch 0 loss 2.5164
+05:43:28 [study] step 200/1278 epoch 0 loss 2.5168
+05:43:48 [study] step 250/1278 epoch 0 loss 2.5060
+05:44:07 [study] step 300/1278 epoch 0 loss 2.5064
+05:44:26 [study] step 350/1278 epoch 0 loss 2.5083
+05:44:45 [study] step 400/1278 epoch 0 loss 2.5071
+05:45:05 [study] step 450/1278 epoch 0 loss 2.4946
+05:45:24 [study] step 500/1278 epoch 0 loss 2.4837
+05:45:44 [study] step 550/1278 epoch 0 loss 2.4878
+05:46:05 [study] step 600/1278 epoch 0 loss 2.4819
+05:46:24 [study] step 650/1278 epoch 0 loss 2.4729
+05:46:44 [study] step 700/1278 epoch 0 loss 2.4704
+05:47:03 [study] step 750/1278 epoch 0 loss 2.4753
+05:47:23 [study] step 800/1278 epoch 0 loss 2.4923
+05:47:43 [study] step 850/1278 epoch 0 loss 2.4546
+05:48:02 [study] step 900/1278 epoch 0 loss 2.4654
+05:48:22 [study] step 950/1278 epoch 0 loss 2.4478
+05:48:41 [study] step 1000/1278 epoch 0 loss 2.4297
+05:48:59 [study] step 1050/1278 epoch 0 loss 2.4429
+05:49:19 [study] step 1100/1278 epoch 0 loss 2.4605
+05:49:38 [study] step 1150/1278 epoch 0 loss 2.4416
+05:49:58 [study] step 1200/1278 epoch 0 loss 2.4461
+05:50:18 [study] step 1250/1278 epoch 0 loss 2.4273
+05:50:43 [study] epoch 0 done: acc/bomb=0.998, acc/danger=0.935, acc/focus=0.857, acc/move=0.447, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.664, f1/shoot=1.000, nll/total=1.902
+05:51:24 DAgger round 1 (sampled): {'episodes': 32.0, 'episode_return': 0.9119999417744111, 'episode_return_se': 0.2718625776170359, 'episode_length': 421.59375, 'episode_length_se': 21.08249251572032, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 8929.375, 'episode_score_se': 1053.4362156215554, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.65625, 'episode_bombs_se': 0.1391895826538568}
+05:51:24 RL starts from runs/dojo_keyboard/dagger1/best.pt
+05:51:38 [consolidation] it 1/292 steps 2048 ret nan kl_ref 0.000 v_loss 1.407 ev -0.03
+05:53:23 [consolidation] it 5/292 steps 10240 ret 0.85 kl_ref 0.000 v_loss 0.289 ev 0.42
+05:55:44 [consolidation] it 10/292 steps 20480 ret 1.26 kl_ref 0.000 v_loss 0.282 ev 0.37

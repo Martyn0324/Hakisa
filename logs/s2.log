@@ -1,0 +1,18 @@
+05:51:44 hindsight intent counts: {'zone': [0, 0, 0, 0, 2, 33, 21, 33547, 36407, 29990], 'focus': [0, 77788, 22212], 'bomb': [0, 99160, 840]}
+05:52:10 [study] step 50/707 epoch 0 loss 2.0502
+05:52:33 [study] step 100/707 epoch 0 loss 1.9705
+05:52:55 [study] step 150/707 epoch 0 loss 1.9333
+05:53:18 [study] step 200/707 epoch 0 loss 1.8938
+05:53:41 [study] step 250/707 epoch 0 loss 1.8850
+05:54:04 [study] step 300/707 epoch 0 loss 1.8599
+05:54:28 [study] step 350/707 epoch 0 loss 1.8611
+05:54:52 [study] step 400/707 epoch 0 loss 1.8475
+05:55:16 [study] step 450/707 epoch 0 loss 1.8392
+05:55:40 [study] step 500/707 epoch 0 loss 1.8166
+05:56:03 [study] step 550/707 epoch 0 loss 1.8326
+05:56:29 [study] step 600/707 epoch 0 loss 1.8503
+05:56:56 [study] step 650/707 epoch 0 loss 1.8294
+05:57:20 [study] step 700/707 epoch 0 loss 1.8252
+05:57:34 [study] epoch 0 done: acc/bomb=0.999, acc/danger=0.987, acc/focus=0.844, acc/move=0.526, acc/shoot=1.000, f1/bomb=0.000, f1/focus=0.707, f1/shoot=1.000, nll/total=1.771
+05:58:02 S1 alone (null intent): {'episodes': 32.0, 'episode_return': 0.2965311993320938, 'episode_return_se': 0.2524470474247405, 'episode_length': 378.25, 'episode_length_se': 20.666027131970836, 'episode_deaths': 3.0, 'episode_deaths_se': 0.0, 'episode_score': 6171.5625, 'episode_score_se': 788.2442539633574, 'episode_clear': 0.0, 'episode_clear_se': 0.0, 'episode_bombs': 0.34375, 'episode_bombs_se': 0.1063448343377457}
+05:58:33 System 2 samples: 8944 train / 360 val

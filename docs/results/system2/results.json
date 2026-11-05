@@ -1,0 +1,62 @@
+{
+  "setup": {
+    "llm": "tiny-qwen3",
+    "train_mode": null,
+    "device": "cpu",
+    "data": "data/dojo_keyboard",
+    "bc": "runs/dojo_keyboard/dagger1/best.pt",
+    "runs": "runs/dojo_keyboard",
+    "out": "docs/results/system2",
+    "difficulty": 2.0,
+    "s1_epochs": 1,
+    "s2_epochs": 3,
+    "stride": 10,
+    "grpo_steps": 150,
+    "episodes": 32,
+    "replan_every": 10,
+    "think": true,
+    "threads": 2,
+    "skip_s1": false,
+    "episode_ticks": 1800
+  },
+  "hindsight_counts": {
+    "zone": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      33,
+      21,
+      33547,
+      36407,
+      29990
+    ],
+    "focus": [
+      0,
+      77788,
+      22212
+    ],
+    "bomb": [
+      0,
+      99160,
+      840
+    ]
+  },
+  "s1_intent_train_s": 350.82412791252136,
+  "s1_alone": {
+    "episodes": 32.0,
+    "episode_return": 0.2965311993320938,
+    "episode_return_se": 0.2524470474247405,
+    "episode_length": 378.25,
+    "episode_length_se": 20.666027131970836,
+    "episode_deaths": 3.0,
+    "episode_deaths_se": 0.0,
+    "episode_score": 6171.5625,
+    "episode_score_se": 788.2442539633574,
+    "episode_clear": 0.0,
+    "episode_clear_se": 0.0,
+    "episode_bombs": 0.34375,
+    "episode_bombs_se": 0.1063448343377457
+  }
+}
