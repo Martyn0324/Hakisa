@@ -119,3 +119,7 @@
 05:55:44 [study] step 200/1249 epoch 0 loss 4.9191
 05:56:57 [study] step 250/1249 epoch 0 loss 4.9302
 05:58:07 [study] step 300/1249 epoch 0 loss 4.9116
+06:00:03 [study] step 350/1249 epoch 0 loss 4.9062
+06:02:40 [study] step 400/1249 epoch 0 loss 4.8536
+06:05:15 [study] step 450/1249 epoch 0 loss 4.8438
+06:07:28 [study] step 500/1249 epoch 0 loss 4.8271

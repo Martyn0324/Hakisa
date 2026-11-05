@@ -91,6 +91,23 @@ Qwen3-0.6B weights could not be downloaded there. See [`docs/results/`](docs/res
 
 RESULTS_PLACEHOLDER
 
+## Practical tips (learned the hard way in the simulator)
+
+* **Record more than you think, and record your recoveries.** Behaviour cloning imitates the states you
+  show it. A near-perfect player never shows how to escape a bad position, so the clone panics the
+  first time it makes a mistake. Play normally, including messy moments, and use `hakisa play` +
+  **F8 takeover** often: those corrections are the most valuable data you can give Hakisa.
+* **Offline accuracy is not play quality.** Held keys make "repeat the visible motion" a great predictor
+  of the next label (the *copycat* shortcut). Hakisa counters it (history dropout, keyframe oversampling),
+  but judge checkpoints by playing (`hakisa play`, `scripts/onpolicy_agreement.py` in the simulator).
+* **Temperature.** Sampling at 1.0 can be erratic, greedy (`--deterministic`) can freeze; `hakisa play`
+  defaults to `--temperature 0.5`.
+* **Your GTX 1650 Ti (4 GB):** System 1 networks are < 1 M parameters (a few MB); training batch 64 fits
+  easily. Qwen3-0.6B in fp16 needs ≈1.2 GB for weights, so System 2 + System 1 fit for *playing*; train
+  System 2 on Colab (`notebooks/hakisa_colab.ipynb`).
+* **Disk:** recordings are memory-mapped `.npy` chunks (fast to train on): ~6.6 GB per hour for Jigoku at
+  192×160, 20 Hz. Use `hakisa record --compress` to trade disk for training speed.
+
 ## Safety
 
 * **F12** kill switch releases every key/button and stops; **F9** pause; **F8** human takeover; the
