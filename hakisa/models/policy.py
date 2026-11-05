@@ -214,14 +214,16 @@ class HakisaPolicy(nn.Module):
         minimap: torch.Tensor | None = None,
         intent: torch.Tensor | None = None,
         deterministic: bool = False,
+        temperature: float = 1.0,
     ) -> tuple[dict[str, torch.Tensor], torch.Tensor, torch.Tensor, PolicyOutput]:
+        """Samples an action (``temperature`` < 1 = sharper; the returned log-prob is always at T=1)."""
         feats = self.features(obs, aux, minimap, intent)
         out = self.heads(feats, pointers=False)
         dist = self.distribution(out)
-        actions = dist.sample_categorical(deterministic)
+        actions = dist.sample_categorical(deterministic, temperature)
         ptr = self.heads(feats, condition=actions, categorical=False)
         out.pointer = ptr.pointer
-        actions.update(dist.sample_pointers(deterministic))
+        actions.update(dist.sample_pointers(deterministic, temperature))
         log_prob = dist.log_prob(actions)
         assert out.value is not None
         return actions, log_prob, out.value, out

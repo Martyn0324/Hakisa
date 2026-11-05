@@ -1,3 +1,29 @@
 05:03:19 BC data: 90625 train / 9375 val frames from 65 episodes
 05:03:20 [study] keyframes (action changes): 47.4% of ticks, boosted x3
 05:04:07 [study] step 50/3540 epoch 0 loss 11.9067
+05:04:34 [study] step 100/3540 epoch 0 loss 10.5088
+05:05:00 [study] step 150/3540 epoch 0 loss 8.5830
+05:05:28 [study] step 200/3540 epoch 0 loss 6.9926
+05:05:54 [study] step 250/3540 epoch 0 loss 6.1900
+05:06:20 [study] step 300/3540 epoch 0 loss 5.7462
+05:06:46 [study] step 350/3540 epoch 0 loss 5.5351
+05:07:12 [study] step 400/3540 epoch 0 loss 5.3742
+05:07:38 [study] step 450/3540 epoch 0 loss 5.2598
+05:08:04 [study] step 500/3540 epoch 0 loss 5.1534
+05:08:30 [study] step 550/3540 epoch 0 loss 5.0851
+05:08:56 [study] step 600/3540 epoch 0 loss 5.0534
+05:09:23 [study] step 650/3540 epoch 0 loss 4.9887
+05:09:50 [study] step 700/3540 epoch 0 loss 4.9609
+05:10:11 [study] epoch 0 done: acc/bomb=1.000, acc/danger=0.983, acc/fire=1.000, acc/slow=0.820, acc2/pointer=0.299, err/pointer=5.498, f1/bomb=0.000, f1/fire=1.000, f1/slow=0.000, nll/total=10.135
+05:10:35 [study] step 750/3540 epoch 1 loss 4.8212
+05:11:02 [study] step 800/3540 epoch 1 loss 4.8205
+05:11:30 [study] step 850/3540 epoch 1 loss 4.7887
+05:11:58 [study] step 900/3540 epoch 1 loss 4.7745
+05:12:27 [study] step 950/3540 epoch 1 loss 4.6954
+05:12:57 [study] step 1000/3540 epoch 1 loss 4.7007
+05:13:29 [study] step 1050/3540 epoch 1 loss 4.6596
+05:14:00 [study] step 1100/3540 epoch 1 loss 4.6552
+05:14:31 [study] step 1150/3540 epoch 1 loss 4.6071
+05:15:00 [study] step 1200/3540 epoch 1 loss 4.5937
+05:15:34 [study] step 1250/3540 epoch 1 loss 4.6114
+05:16:01 [study] step 1300/3540 epoch 1 loss 4.6003

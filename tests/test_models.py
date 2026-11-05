@@ -115,3 +115,18 @@ def test_save_load_roundtrip(tmp_path):
     a = policy(obs)
     b = loaded(obs)
     assert torch.allclose(a.logits["fire"], b.logits["fire"])
+
+
+def test_temperature_sharpens_sampling():
+    torch.manual_seed(0)
+    p = PointerLogits(torch.randn(1, 12).expand(4000, -1), torch.zeros(4000, 1, 12), (3, 4), (1, 1))
+    fx1, _ = p.sample()
+    fx2, _ = p.tempered(0.3).sample()
+    top = int(torch.softmax(p.cell[0], -1).view(3, 4).sum(0).argmax())
+    assert (fx2 == top).float().mean() > (fx1 == top).float().mean()
+    cfg = load_game_config("dojo_keyboard")
+    policy = build_policy(cfg).eval()
+    obs, _, _ = _batch(cfg)
+    a, lp, _, _ = policy.act(obs, temperature=0.5)
+    lp2, *_ = policy.evaluate_actions(obs, a)
+    assert torch.allclose(lp, lp2, atol=1e-5)  # log-prob reported at T=1

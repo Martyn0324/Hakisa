@@ -124,7 +124,8 @@ def cmd_play(args) -> None:  # pragma: no cover - needs a game
 
         planner = load_planner(args.planner, cfg, device)
     factory = (lambda: Recorder(cfg, args.takeover_dir, region, tracker, source="takeover")) if args.takeover_dir else None
-    agent = Agent(policy, env, device, deterministic=args.deterministic, planner=planner, recorder_factory=factory)
+    agent = Agent(policy, env, device, deterministic=args.deterministic, temperature=args.temperature, planner=planner,
+                  recorder_factory=factory)
     try:
         print(agent.run(max_steps=args.steps))
     finally:
@@ -185,7 +186,7 @@ def cmd_dojo_eval(args) -> None:
 
     policy = load_policy(args.ckpt)
     res = evaluate_policy(policy, dojo_env_factory(args.scheme, 16, args.difficulty), args.episodes,
-                          deterministic=args.deterministic, seed=args.seed)
+                          deterministic=args.deterministic, seed=args.seed, temperature=args.temperature)
     print(json.dumps(res, indent=2))
 
 
@@ -247,6 +248,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--planner", default=None, help="System 2 checkpoint directory (optional)")
     p.add_argument("--takeover-dir", default=None, help="where to save your corrections")
     p.add_argument("--deterministic", action="store_true")
+    p.add_argument("--temperature", type=float, default=0.5, help="sampling temperature (<1 = more decisive)")
     p.add_argument("--steps", type=int, default=None)
     p.add_argument("--device", default="auto")
     p.set_defaults(fn=cmd_play)
@@ -275,6 +277,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--episodes", type=int, default=32)
     p.add_argument("--difficulty", type=float, default=2.0)
     p.add_argument("--deterministic", action="store_true")
+    p.add_argument("--temperature", type=float, default=1.0)
     p.add_argument("--seed", type=int, default=777)
     p.set_defaults(fn=cmd_dojo_eval)
 

@@ -94,6 +94,11 @@ class PointerLogits:
         fy = cy * sh + off // sw
         return fx, fy
 
+    def tempered(self, temperature: float) -> "PointerLogits":
+        if temperature == 1.0:
+            return self
+        return PointerLogits(self.cell / temperature, self.offset / temperature, self.grid, self.sub)
+
     def expected_xy(self) -> torch.Tensor:
         """Expected cell centre in normalised [0,1] coordinates (B, 2) — handy for visualisation."""
         gh, gw = self.grid
@@ -185,23 +190,27 @@ class ActionDistribution:
         return total
 
     # -- sampling ---------------------------------------------------------------------------------
-    def sample_categorical(self, deterministic: bool = False) -> dict[str, torch.Tensor]:
+    def sample_categorical(self, deterministic: bool = False, temperature: float = 1.0) -> dict[str, torch.Tensor]:
+        """``temperature`` < 1 sharpens play-time sampling (RL always samples at 1)."""
         out = {}
         for h in self.space.categorical_heads:
             logits = self.out.logits[h.name]
-            out[h.name] = logits.argmax(-1) if deterministic else torch.multinomial(F.softmax(logits, -1), 1)[:, 0]
+            if deterministic:
+                out[h.name] = logits.argmax(-1)
+            else:
+                out[h.name] = torch.multinomial(F.softmax(logits / temperature, -1), 1)[:, 0]
         return out
 
-    def sample_pointers(self, deterministic: bool = False) -> dict[str, torch.Tensor]:
+    def sample_pointers(self, deterministic: bool = False, temperature: float = 1.0) -> dict[str, torch.Tensor]:
         out = {}
         for p in self.space.pointer_heads:
-            fx, fy = self.out.pointer[p.name].sample(deterministic)
+            fx, fy = self.out.pointer[p.name].tempered(temperature).sample(deterministic)
             out[f"{p.name}_x"], out[f"{p.name}_y"] = fx, fy
         return out
 
-    def sample(self, deterministic: bool = False) -> dict[str, torch.Tensor]:
-        out = self.sample_categorical(deterministic)
-        out.update(self.sample_pointers(deterministic))
+    def sample(self, deterministic: bool = False, temperature: float = 1.0) -> dict[str, torch.Tensor]:
+        out = self.sample_categorical(deterministic, temperature)
+        out.update(self.sample_pointers(deterministic, temperature))
         return out
 
     # -- supervised losses ------------------------------------------------------------------------

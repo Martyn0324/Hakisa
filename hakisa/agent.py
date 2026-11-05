@@ -27,6 +27,7 @@ class Agent:
         env: RealtimeGameEnv,
         device: torch.device,
         deterministic: bool = False,
+        temperature: float = 1.0,
         planner=None,
         recorder_factory: Callable[[], object] | None = None,
         log_every: int = 200,
@@ -36,6 +37,7 @@ class Agent:
         self.env = env
         self.device = device
         self.deterministic = deterministic
+        self.temperature = temperature
         self.planner = planner
         self.recorder_factory = recorder_factory
         self.log_every = log_every
@@ -79,7 +81,8 @@ class Agent:
                 o, aux, mm = (self._tensor(x) for x in split_obs(obs))
                 intent = self.planner.latest_intent(self.device) if self.planner is not None else None
                 with torch.no_grad():
-                    actions, _, value, out = self.policy.act(o, aux, mm, intent, deterministic=self.deterministic)
+                    actions, _, value, out = self.policy.act(o, aux, mm, intent, deterministic=self.deterministic,
+                                                             temperature=self.temperature)
                 self.latencies.append(time.perf_counter() - t0)
                 if self.planner is not None:
                     self.planner.observe(self.policy, o, aux, mm, env.last_hud)

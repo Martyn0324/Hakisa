@@ -509,6 +509,7 @@ def evaluate_policy(
     max_steps: int = 100000,
     actor: Callable[[np.ndarray], dict[str, np.ndarray]] | None = None,
     seed: int = 12345,
+    temperature: float = 1.0,
 ) -> dict[str, float]:
     """Plays ``episodes`` complete episodes (fixed seeds) and averages the episode statistics."""
     env = make_env(seed)
@@ -521,7 +522,7 @@ def evaluate_policy(
             a = actor(obs)
         else:
             o, aux, mm = (torch.from_numpy(x).to(device) if x is not None else None for x in split_obs(obs))
-            act, *_ = policy.act(o, aux, mm, deterministic=deterministic)
+            act, *_ = policy.act(o, aux, mm, deterministic=deterministic, temperature=temperature)
             a = {k: v.cpu().numpy() for k, v in act.items()}
         obs, r, term, trunc, info = env.step(a)
         for i in np.nonzero(term | trunc)[0]:
